@@ -8,7 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Post;
-use App\Models\Comments;
+use App\Models\Comment;
+use App\Models\PostVote;
+use App\Models\CommentVote;
 
 class User extends Authenticatable
 {
@@ -43,12 +45,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function Posts()
+    function Posts()
     {
         return $this->hasMany(Post::class);
     }
-    public function Comments()
+    function Comments()
     {
         return $this->hasMany(Comment::class);
     }
+    function PostVotes()
+    {
+        return $this->hasMany(PostVote::class);
+    }
+    function CommentVotes()
+    {
+        return $this->hasMany(CommentVote::class);
+    }
+
 }

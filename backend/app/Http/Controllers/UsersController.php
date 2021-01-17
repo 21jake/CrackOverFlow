@@ -80,6 +80,11 @@ class UsersController extends Controller
     }
     public function dummyFunction()
     {
-        dd(12);
+        if (Auth::user()) {
+            $id = Auth::user()->email;
+            dd($id);
+            $user = User::where('id', $id)->get();
+            dd($user);
+        }
     }
 }
