@@ -6,7 +6,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostVoteController;
-
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\InterestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,33 +26,44 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', [UsersController::class, 'login']);
     Route::post('/register', [UsersController::class, 'register']);
     Route::get('/logout', [UsersController::class, 'logout'])->middleware('auth:api');
-    Route::get('/dummy', [UsersController::class, 'dummyFunction'])->middleware('auth:api');
+    Route::get('/verify', [UsersController::class, 'dummyFunction'])->middleware('auth:api');
 });
 
 Route::group(['prefix' => 'posts'], function () {
     Route::get('/', [PostController::class, 'getPosts']);
-    Route::post('create', [PostController::class, 'create']);
+    Route::post('create', [PostController::class, 'create'])->middleware('auth:api');
     Route::get('detail/{post_id}', [PostController::class, 'getPost']);
     Route::get('user/{user_id}', [PostController::class, 'getPostsUser']);
-    Route::delete('delete/{post_id}', [PostController::class, 'deletePost']);
-    Route::put('update', [PostController::class, 'updatePost']);
+    Route::get('topic/{topic_id}', [PostController::class, 'getPostsTopic']);
+    Route::delete('delete/{post_id}', [PostController::class, 'deletePost'])->middleware('auth:api');
+    Route::put('update', [PostController::class, 'updatePost'])->middleware('auth:api');
 });
 
 Route::group(['prefix' => 'comments'], function () {
     Route::get('/user/{user_id}', [CommentController::class, 'getCommentsUser']);
     Route::get('/post/{post_id}', [CommentController::class, 'getCommentPost']);
     Route::get('/comment/{comment_id}', [CommentController::class, 'getChildrenComments']);
-    Route::post('create', [CommentController::class, 'create']);
-    Route::delete('delete/{comment_id}', [CommentController::class, 'delete']);
+    Route::post('create', [CommentController::class, 'create'])->middleware('auth:api');
+    Route::delete('delete/{comment_id}', [CommentController::class, 'delete'])->middleware('auth:api');
     Route::put('update', [CommentController::class, 'update']);
+});
 
+Route::group(['prefix' => 'topics'], function () {
+    // Route::get('/post/{post_id}', [CommentController::class, 'getCommentPost']);
+    // Route::get('/comment/{comment_id}', [CommentController::class, 'getChildrenComments']);
+    Route::post('create', [TopicController::class, 'create'])->middleware('auth:api');
+    Route::get('/getAll', [TopicController::class, 'getAllTopics']);
 
-    // Route::get('detail/{postId}', [CommentController::class, 'getPost']);
-    // Route::get('user/{userId}', [CommentController::class, 'getPostsUser']);
-    // Route::delete('delete/{postId}', [CommentController::class, 'deletePost']);
-    // Route::put('update', [CommentController::class, 'updatePost']);
+    // Route::delete('delete/{comment_id}', [CommentController::class, 'delete']);
+    // Route::put('update', [CommentController::class, 'update']);
+
+});
+Route::group(['prefix' => 'interests'], function () {
+    Route::post('create', [InterestController::class, 'create']);
 });
 
 Route::group(['prefix' => 'vote'], function () {
     Route::post('post', [PostVoteController::class, 'index']);
+
 });
+

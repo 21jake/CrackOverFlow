@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\CommentVote;
 use App\Models\Post;
+use App\Models\Topic;
 
 
 class Comment extends Model
@@ -22,6 +23,10 @@ class Comment extends Model
     function post()
     {
         return $this->belongsTo(Post::class);
+    }
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class);
     }
     function commentVote()
     {

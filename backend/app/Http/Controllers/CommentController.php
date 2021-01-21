@@ -19,7 +19,9 @@ class CommentController extends Controller
             'parent_comment_id' => $input['parent_comment_id']
         ];
         $data = Comment::create($comment);
-        return GetdataOutput(1, 200, 'Tạo bình luận thành công', $data);
+        $output = Comment::where('id', $data->id)->with('user')->first();
+        // dd($output);
+        return GetdataOutput(1, 200, 'Tạo bình luận thành công', $output);
     }
     public function getCommentsUser($user_id)
     {
@@ -27,7 +29,7 @@ class CommentController extends Controller
         if (!$user) {
             return GetdataOutput(0, 400, 'Người dùng không tồn tại', '');
         }
-        $comments = User::find($user_id)->comments;
+        $comments = Comment::where('user_id', $user_id)->orderBy('created_at','desc')->with('user') ->paginate(5);
         if ($comments->isNotEmpty()) {
             return GetdataOutput(1, 200, 'Danh sách bình luận từ người dùng', $comments);
         } else {
@@ -41,8 +43,7 @@ class CommentController extends Controller
         if (!$post) {
             return GetdataOutput(0, 400, 'Bài đăng không tồn tại', '');
         }
-        // $comments = Post::find($post_id)->comments;
-        $comments = Post::find($post_id)->comments;
+        $comments = Comment::where('post_id', $post_id)->orderBy('created_at','desc')->with('user')->get();
 
         if ($comments->isNotEmpty()) {
             return GetdataOutput(1, 200, 'Danh sách bình luận của bài đăng', $comments);

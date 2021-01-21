@@ -19,14 +19,14 @@ class UsersController extends Controller
             return response()->json([
                 'success' => true,
                 'token' => $success,
-                'user' => $user
+                'user' => $user,
+                'message' => 'Đăng nhập thành công'
+
             ]);
         } else {
-            //if authentication is unsuccessfull, notice how I return json parameters
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Email or Password',
-            ], 401);
+            //if authentication is unsuccessfull, notice how I return json parameter
+            return GetDataOutput(0, 401, "Mật khẩu hoặc email chưa chính xác", '');
+
         }
     }
     /**
@@ -44,21 +44,30 @@ class UsersController extends Controller
             'password' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
+            return GetDataOutput(0, 400, $validator->errors()->first(), '');
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $success['token'] = $user->createToken('appToken')->accessToken;
+
+        if ($input['topics']) {
+            $userId = $user->id;
+            $this->createInterests($userId, $input['topics']);
+        }
+
         return response()->json([
             'success' => true,
             'token' => $success,
-            'user' => $user
+            'user' => $user,
+            'message' => 'Tạo tài khoản thành công'
         ]);
+    }
+    public function createInterests($userId, $topics)
+    {
+        $user = User::find($userId);
+        $user->Topics()->attach($topics);
     }
 
     public function logout(Request $res)
@@ -81,10 +90,11 @@ class UsersController extends Controller
     public function dummyFunction()
     {
         if (Auth::user()) {
-            $id = Auth::user()->email;
-            dd($id);
-            $user = User::where('id', $id)->get();
-            dd($user);
+            $user = Auth::user();
+            return GetdataOutput(1, 200, 'Thông tin người dùng', $user);
+        } else {
+            return GetdataOutput(0, 401, 'Không tồn tại', '');
+
         }
     }
 }

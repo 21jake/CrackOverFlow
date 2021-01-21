@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Comment;
 use App\Models\PostVote;
 use App\Models\CommentVote;
+use App\Models\Topic;
 
 class User extends Authenticatable
 {
@@ -61,5 +62,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(CommentVote::class);
     }
-
+    public function Topics()
+    {
+        return $this->belongsToMany(Topic::class, 'interests', 'user_id', 'topic_id')->withTimestamps();
+    }
 }

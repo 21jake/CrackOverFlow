@@ -6,18 +6,20 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Topic;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
     //
     public function getPosts()
     {
-        $posts = Post::all();
+        $posts = Post::orderBy('created_at','desc')->with('comments', 'topic', 'postVotes')->paginate(10);
         return GetdataOutput(1, 200, 'Lấy danh sách bài đăng thành công', $posts);
     }
     public function getPost($postId)
     {
-        $post = Post::find($postId);
+        $post = Post::where('id', $postId)->with('comments')->first();
         if ($post) {
             return GetdataOutput(1, 200, 'Tìm thấy bài đăng', $post);
         } else {
@@ -29,14 +31,38 @@ class PostController extends Controller
         // $posts = User::find($userId)->find($userId)->posts;
         $user = User::find($userId);
         if ($user) {
-            $posts = User::find($userId)->posts;
+            $posts = Post::where('user_id', $userId)->with('postVotes')->paginate(10);
+            $totalScore = DB::table('posts')
+            ->leftJoin('post_votes', 'post_votes.post_id', 'posts.id')->where('posts.user_id', $userId)
+            ->sum('post_votes.type');
+            // dd($allPosts);
+            $data =  array('posts' => $posts, 'totalCredit' => $totalScore);
+            // $data = array($posts, $allPosts);
+            // dd($data);
+            // $data['type']
+            // dd($data);
             if ($posts->isNotEmpty()) {
-                return GetdataOutput(1, 200, 'Danh sách bài đăng từ người dùng', $posts);
+                return GetdataOutput(1, 200, 'Danh sách bài đăng từ người dùng', $data);
             } else {
                 return GetdataOutput(1, 201, 'Người dùng này không có bài đăng nào', '');
             }
         } else {
             return GetdataOutput(0, 400, 'Người dùng không tồn tại', '');
+        }
+    }
+    public function getPostsTopic($topicId)
+    {
+        // $posts = User::find($userId)->find($userId)->posts;
+        $topic = Topic::find($topicId);
+        if ($topic) {
+            $posts = Topic::find($topicId)->posts;
+            if ($posts->isNotEmpty()) {
+                return GetdataOutput(1, 200, 'Danh sách bài đăng từ chủ đề', $posts);
+            } else {
+                return GetdataOutput(1, 201, 'Chủ đề này không có bài đăng nào', '');
+            }
+        } else {
+            return GetdataOutput(0, 400, 'Chủ đề không tồn tại', '');
         }
     }
     public function deletePost($postId)
@@ -90,7 +116,6 @@ class PostController extends Controller
         $rules = [
             'content' => 'required|min:10',
             'title' => 'required|min:10',
-
         ];
         $customMessages = [
             'content.required' => 'Vui lòng nhập nội dung câu hỏi',
@@ -105,7 +130,8 @@ class PostController extends Controller
         $post = [
             'title' => $request->title,
             'content' => $request->content,
-            'user_id' => $request->user_id
+            'user_id' => $request->user_id,
+            'topic_id' => $request->topic_id,
         ];
         $data = Post::create($post);
 
