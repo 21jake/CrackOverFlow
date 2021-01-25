@@ -27,6 +27,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/register', [UsersController::class, 'register']);
     Route::get('/logout', [UsersController::class, 'logout'])->middleware('auth:api');
     Route::get('/verify', [UsersController::class, 'dummyFunction'])->middleware('auth:api');
+    Route::get('detail/{user_id}', [UsersController::class, 'getUserDetails']);
+
 });
 
 Route::group(['prefix' => 'posts'], function () {
@@ -37,6 +39,9 @@ Route::group(['prefix' => 'posts'], function () {
     Route::get('topic/{topic_id}', [PostController::class, 'getPostsTopic']);
     Route::delete('delete/{post_id}', [PostController::class, 'deletePost'])->middleware('auth:api');
     Route::put('update', [PostController::class, 'updatePost'])->middleware('auth:api');
+    Route::get('hotPosts', [PostController::class, 'hotPostsToday']);
+
+
 });
 
 Route::group(['prefix' => 'comments'], function () {

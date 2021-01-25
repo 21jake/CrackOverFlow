@@ -1,5 +1,6 @@
 import NavBar from './main/component/entities/shared/NavBar'
 import User from './main/component/entities/user/User';
+import Guess from './main/component/entities/user/Guess';
 import Home from './main/component/Home';
 import { BrowserRouter, Route } from 'react-router-dom';
 import SignUp from './main/component/auth/SignUp';
@@ -69,6 +70,9 @@ function App() {
           <Route path="/register" exact component={SignUp} />
           <Route path="/login" exact component={SignInSide} />
           <Route path="/posts/create" exact component={PostCreate} />
+          <Route path="/user/:id">
+            <Guess />
+          </Route>
         </BrowserRouter>
       </div>
     </AuthContext.Provider>

@@ -18,6 +18,10 @@ code {
   /* width: 90%; */
   max-width: 70vw;
 }
+.modal-dialog.deleteModal {
+  max-width: 45vw;
+
+}
 .post_textAreaContent {
   min-height: 300px !important;
 }

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Topic;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+
 
 class PostController extends Controller
 {
@@ -25,6 +27,19 @@ class PostController extends Controller
         } else {
             return GetdataOutput(0, 400, 'Không tìm thấy bài đăng', '');
         }
+    }
+    public function hotPostsToday()
+    {
+        $from = Carbon::now();
+        $to = $from->subDays(7);
+
+
+        $posts = Post::whereBetween('created_at', array(Carbon::now()->subWeek(),Carbon::now()))
+        ->with('comments', 'topic', 'postVotes')->get();
+        // dd($posts);
+        return GetdataOutput(1, 200, 'Tìm thấy bài đăng', $posts);
+
+
     }
     public function getPostsUser($userId)
     {

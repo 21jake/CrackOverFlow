@@ -87,6 +87,16 @@ class UsersController extends Controller
             ]);
         }
     }
+    public function getUserDetails($userId)
+    {
+        $user = User::find($userId);
+        if ($user) {
+            return GetdataOutput(1, 200, 'Thông tin người dùng', $user);
+        } else {
+            return GetdataOutput(0, 401, 'Không tồn tại', '');
+        }
+        # code...
+    }
     public function dummyFunction()
     {
         if (Auth::user()) {
