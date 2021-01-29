@@ -12,7 +12,9 @@ import Comment from '../comment/Comment'
 const User = () => {
     const { user } = useAuth();
     const history = useHistory();
-    const [totalCredit, setTotalCredit] = useState(0)
+    const [totalCredit, setTotalCredit] = useState(0);
+    const interestedTopics = user?.topics.length ? user.topics.map(e => e.id) : [1, 2];
+    const [suggestedPosts, setSuggestedPosts] = useState([]);
 
     useEffect(() => {
         if (!user || !user.id) {
@@ -32,7 +34,6 @@ const User = () => {
         try {
             const res = await Axios.get(`/posts/user/${user?.id}?page=${paginationState.currentPage}`);
             if (res.status === 200) {
-                // console.log(res.data.data.posts.total , 'res.res.data.data.total.data.posts)');
                 setPosts(res.data.data.posts.data);
                 const total = Math.ceil(res.data.data.posts.total / paginationState.itemsPerPage);
                 setTotalPage(total);
@@ -49,27 +50,42 @@ const User = () => {
         try {
             const res = await Axios.get(`/comments/user/${user?.id}`);
             if (res.status === 200) {
-                // console.log(res, 'res')
+                console.log(res, 'res')
                 if (res.data.data.data.length) {
                     setComments(res.data.data.data);
                 } else {
                     setComments([]);
                 }
-
-            } else {
-                ToastError(res.data.message)
             }
         } catch (error) {
             console.log(error);
         }
     }
+
+    const getSuggestedPosts = async () => {
+        try {
+            const res = await Axios.get(`/posts/search?topics=${JSON.stringify(interestedTopics)}`);
+            if (res.status === 200) {
+                console.log(res, 'res')
+                if (res.status === 200) {
+                    setSuggestedPosts(res.data.data.data);
+                } else {
+                    setSuggestedPosts([])
+                }    
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         if (user) {
             getComments();
+            getSuggestedPosts();
         }
     }, [user])
 
-    // console.log(posts, 'post')
+    // console.log(suggestedPost, 'suggestedPost')
 
     const handlePaginationChange = (event, value) => {
         setPaginationState({ ...paginationState, currentPage: value })
@@ -109,7 +125,7 @@ const User = () => {
                     <div className="text-center border border-secondary rounded h-100 d-flex">
                         <h2 className="m-auto text-primary">
                             CREDIT: {totalCredit}
-                    </h2>
+                        </h2>
                     </div>
                 </Col>
             </Row>
@@ -151,13 +167,34 @@ const User = () => {
                         <Col xs="12" className="m-3">
                             <div className="border border-secondary rounded m-3">
                                 {comments?.length ?
-                                    comments.map(e => 
-                                        <Comment 
-                                        key={e.id}
-                                        clickDisplayPost={true}
-                                        isShort={true} entity={e} />
+                                    comments.map(e =>
+                                        <Comment
+                                            key={e.id}
+                                            clickDisplayPost={true}
+                                            isShort={true} entity={e} />
                                     )
                                     : <p className="text-center m-3"> Không có bình luận nào </p>
+                                }
+                            </div>
+
+                        </Col>
+                    </Row>
+                    <Row className={suggestedPosts.length ? "" : "d-none" }>
+                        <Col xs="12" >
+                            <span className="lead">
+                                Bài viết đề xuất
+                        </span>
+                        </Col>
+                        <Col xs="12" className="m-3">
+                            <div className="border border-secondary rounded m-3">
+                                {
+                                    suggestedPosts?.length ? suggestedPosts.map(e => (
+                                        <PostPreview
+                                            key={e.id}
+                                            post={e}
+                                            hideVote={true}
+                                        />
+                                    )) : <p className="text-center m-3"> Không có bài đăng nào </p>
                                 }
                             </div>
 
