@@ -52,7 +52,7 @@ const PostDetail = (props) => {
 
 
 
-    console.log(post, 'post');
+    // console.log(post, 'post');
     return (
         <Modal className="m-3" isOpen={props.modal} toggle={() => props.toggle()} className="postDetailModal">
             <DeleteModal

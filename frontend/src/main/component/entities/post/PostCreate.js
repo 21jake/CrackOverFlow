@@ -25,7 +25,12 @@ const PostCreate = (props) => {
 
 
     const onTopicsChange = (e) => {
-        setTopic(e.value);
+        if (e) {
+            setTopic(e.value);
+        } else {
+            setTopic(undefined);
+
+        }
     }
 
     const clearForm = () => {

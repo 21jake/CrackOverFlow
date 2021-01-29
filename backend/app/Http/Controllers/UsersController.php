@@ -26,9 +26,27 @@ class UsersController extends Controller
         } else {
             //if authentication is unsuccessfull, notice how I return json parameter
             return GetDataOutput(0, 401, "Mật khẩu hoặc email chưa chính xác", '');
-
         }
     }
+    public function search(Request $request)
+    {
+        $input = $request->all();
+        $users = User::whereNotNull('id');
+        if ($input['query']) {
+            $users->where('fname', 'LIKE', '%' . $input['query'] . '%')
+                ->orWhere('lname', 'LIKE', '%' . $input['query'] . '%')
+                ->orWhere('phone', 'LIKE', '%' . $input['query'] . '%')
+                ->orWhere('email', 'LIKE', '%' . $input['query'] . '%');
+        }
+        $data = $users->paginate(10);
+        if ($data->isNotEmpty()) {
+            return GetdataOutput(1, 200, 'Kết quả tìm kiếm', $data);
+        } else {
+            return GetdataOutput(1, 201, 'Không tìm thấy nguời dùng phù hợp', '');
+        }
+    }
+
+
     /**
      * Register api.
      *
@@ -90,6 +108,12 @@ class UsersController extends Controller
     public function getUserDetails($userId)
     {
         $user = User::find($userId);
+        // $topic = $user->Topics()->get();
+        // dd($topic->toArray());
+        foreach ($user->Topics as $topic) {
+             $topic->interests;
+        }
+        // dd($user);
         if ($user) {
             return GetdataOutput(1, 200, 'Thông tin người dùng', $user);
         } else {
@@ -101,10 +125,12 @@ class UsersController extends Controller
     {
         if (Auth::user()) {
             $user = Auth::user();
+            foreach ($user->Topics as $topic) {
+                $topic->interests;
+            }
             return GetdataOutput(1, 200, 'Thông tin người dùng', $user);
         } else {
             return GetdataOutput(0, 401, 'Không tồn tại', '');
-
         }
     }
 }

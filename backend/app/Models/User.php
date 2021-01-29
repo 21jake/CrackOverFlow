@@ -46,6 +46,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['number_of_votes'];
+
     function Posts()
     {
         return $this->hasMany(Post::class);
@@ -65,5 +67,10 @@ class User extends Authenticatable
     public function Topics()
     {
         return $this->belongsToMany(Topic::class, 'interests', 'user_id', 'topic_id')->withTimestamps();
+    }
+
+    public function getNumberOfVotesAttribute()
+    {
+        return $this->PostVotes->count();
     }
 }

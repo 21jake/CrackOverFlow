@@ -65,7 +65,10 @@ const TopicsDropdown = (props) => {
                 options={topics}
                 isMulti={props.isMultiple}
                 placeholder="Danh sách chủ đề"
+                isClearable
+                isSearchable
                 styles={customStyles} />
+                
         </>
     )
 }

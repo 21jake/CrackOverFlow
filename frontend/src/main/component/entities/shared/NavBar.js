@@ -13,6 +13,7 @@ const CustomNavBar = () => {
     const history = useHistory();
     const [postCreateModal, setPostCreateModal] = useState(false);
     const toggleDetailModal = () => setPostCreateModal(!postCreateModal);
+    const [query, setQuery] = useState('')
     const createModalVisible = () => {
         //   props.getEntity(id);
         setPostCreateModal(!postCreateModal);
@@ -21,6 +22,11 @@ const CustomNavBar = () => {
     const handleLogout = () => {
         history.push('/register');
         logout();
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        history.push(`/search/${query}`)
     }
 
 
@@ -75,9 +81,11 @@ const CustomNavBar = () => {
 
 
                 </Nav>
-                <Form inline>
-                    <FormControl type="text" placeholder="Tìm kiếm" className="mr-sm-2" />
-                    <Button variant="outline-info">Tìm kiếm</Button>
+                {/* <Form inline onSubmit={(e) => history.push(`/search/${e}`)}> */}
+                <Form inline onSubmit={handleSubmit}>
+
+                    <FormControl type="text" placeholder="Tìm kiếm" className="mr-sm-2" name="query" value={query} onChange={e => setQuery(e.target.value)} />
+                    <Button variant="outline-info" type="submit">Tìm kiếm</Button>
                 </Form>
             </Navbar.Collapse>
         </Navbar>

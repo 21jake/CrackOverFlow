@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Vote from '../vote/Vote'
-import { Col, Row, Label, Badge } from 'reactstrap';
+import { Col, Row, Badge } from 'reactstrap';
 import PostDetail from './PostDetail';
 import { returnValueOrEmpty } from '../shared/returnValueOrEmpty';
 import moment from 'moment';
 import Axios from '../../../api/Axios';
 import { ToastError } from '../shared/Toast'
-import { propTypes } from 'react-bootstrap/esm/Image';
 // import { useEffect, useState, useRef } from 'react';
 
 const PostPreview = ({ post, hideVote }) => {
@@ -65,9 +64,6 @@ const PostPreview = ({ post, hideVote }) => {
                 toggle={() => toggleDetailModal()}
             />
         </Col>
-
-
-
     )
 }
 

@@ -62,8 +62,8 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         callVoteAPI(voteType);
         // votePostAPI(voteType)
         // console.log(voteType)
-        console.log(user,'user');
-        console.log(postId,'postId');
+        // console.log(user, 'user');
+        // console.log(postId, 'postId');
 
         setHaveUserVotedThisTurn(true);
 
@@ -75,10 +75,10 @@ const Vote = ({ totalVote, postId, hideVote }) => {
                 setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 1 : stateTotalVote - 1);
             }
         } else if (checkIfUserVotedThisPost() === "UPVOTE") {
-            
+
             setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 2 : stateTotalVote - 2);
         } else if (checkIfUserVotedThisPost() === "DOWNVOTE") {
-            setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 2 : stateTotalVote  -2);
+            setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 2 : stateTotalVote - 2);
         }
 
     }
@@ -109,11 +109,13 @@ const Vote = ({ totalVote, postId, hideVote }) => {
 
     return (
         <Row className="text-center">
-            <Col xs="12" >
-                <Button color="transparent"
+            <Col xs="12"  >
+                <Button
+                    className="p-0"
+                    color="transparent"
                     disabled={userAction === "UPVOTE"}
                     onClick={() => handleVoting('UPVOTE')}
-                    // className={hideVote ? "d-none" : "" }
+                // className={hideVote ? "d-none" : "" }
                 >
                     <FontAwesomeIcon
                         color={userAction === "UPVOTE" ? 'orange' : ''}
@@ -122,12 +124,14 @@ const Vote = ({ totalVote, postId, hideVote }) => {
                 </Button>
 
             </Col>
-            <Col className="text-center">
+            <Col xs="12">
                 {/* {returnTotalVotes(totalVote)} */}
                 {stateTotalVote}
             </Col>
-            <Col xs="12">
-                <Button color="transparent"
+            <Col xs="12" >
+                <Button
+                    className="p-0"
+                    color="transparent"
                     disabled={userAction === "DOWNVOTE"}
                     // className={hideVote ? "d-none" : "" }
                     onClick={() => handleVoting('DOWNVOTE')}>

@@ -26,7 +26,7 @@ const Guess = () => {
 
     const getUser = async () => {
         try {
-            const res = await Axios.get(`/auth/detail/${id}`);
+            const res = await Axios.get(`/users/detail/${id}`);
             if (res.status === 200) {
                 console.log(res, 'rees')
                 setUser(res.data.data)

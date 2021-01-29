@@ -9,6 +9,7 @@ import PostCreate from './main/component/entities/post/PostCreate'
 import { ToastContainer } from 'react-toastify';
 import { useState, useEffect, createContext, useContext, useRef } from 'react';
 import Axios from "./main/api/Axios";
+import Search from './main/component/Search';
 
 
 export const AuthContext = createContext();
@@ -72,6 +73,9 @@ function App() {
           <Route path="/posts/create" exact component={PostCreate} />
           <Route path="/user/:id">
             <Guess />
+          </Route>
+          <Route path="/search/:query">
+            <Search />
           </Route>
         </BrowserRouter>
       </div>
