@@ -28,7 +28,7 @@ const Guess = () => {
         try {
             const res = await Axios.get(`/users/detail/${id}`);
             if (res.status === 200) {
-                console.log(res, 'rees')
+                (res, 'rees')
                 setUser(res.data.data)
             } else {
                 ToastError(res.data.message)
@@ -44,7 +44,7 @@ const Guess = () => {
         try {
             const res = await Axios.get(`/posts/user/${user?.id}?page=${paginationState.currentPage}`);
             if (res.status === 200) {
-                // console.log(res.data.data.posts.total , 'res.res.data.data.total.data.posts)');
+                // (res.data.data.posts.total , 'res.res.data.data.total.data.posts)');
                 setPosts(res.data.data.posts.data);
                 const total = Math.ceil(res.data.data.posts.total / paginationState.itemsPerPage);
                 setTotalPage(total);
@@ -61,7 +61,7 @@ const Guess = () => {
         try {
             const res = await Axios.get(`/comments/user/${user?.id}`);
             if (res.status === 200) {
-                // console.log(res, 'res')
+                // (res, 'res')
                 if (res.data.data.data.length) {
                     setComments(res.data.data.data);
                 } else {

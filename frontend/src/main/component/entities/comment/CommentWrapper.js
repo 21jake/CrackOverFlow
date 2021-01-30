@@ -18,7 +18,7 @@ const CommentWrapper = (props) => {
         try {
             const res = await Axios.get(`/comments/post/${postId}`);
             if (res.status === 200) {
-                // console.log(res, 'res')
+                // (res, 'res')
                 if (res.data.data.length) {
                     setComments(res.data.data);
                 } else {
@@ -42,7 +42,7 @@ const CommentWrapper = (props) => {
         try {
             const res = await Axios.post('comments/create', data);
             if (res.status === 200) {
-                console.log(res, 'res');
+                (res, 'res');
                 setComments([...comments, res.data.data]);
                 formRef.current.reset();
             } else {
@@ -58,7 +58,7 @@ const CommentWrapper = (props) => {
             value.post_id = postId;
             value.user_id = user.id;
             value.parent_comment_id = null;
-            console.log(value, 'value');
+            (value, 'value');
             submitComment(value);
         }
     }

@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 const DeleteModal = (props) => {
     const  { prompt, handleComfirm } = props;
-    // console.log(post, 'post');
+    // (post, 'post');
     return (
         <Modal className="m-3" isOpen={props.modal} toggle={() => props.toggle()} className="deleteModal">
             <ModalHeader toggle={() => props.toggle()}>

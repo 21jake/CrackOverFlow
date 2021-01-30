@@ -18,9 +18,9 @@ const Vote = ({ totalVote, postId, hideVote }) => {
 
 
     const { user } = useAuth();
-    // console.log(totalVote);
+    // (totalVote);
 
-    // console.log(user);
+    // (user);
 
     const returnTotalVotes = (post_votes) => {
         if (post_votes && post_votes.length) {
@@ -31,8 +31,8 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         }
     }
 
-    // console.log(postId, 'postId');
-    // console.log(user, 'user');
+    // (postId, 'postId');
+    // (user, 'user');
 
     const checkIfUserVotedThisPost = () => {
         const voteInstance = totalVote?.find(e => e.user_id === user?.id);
@@ -61,9 +61,9 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         setUserAction(voteType)
         callVoteAPI(voteType);
         // votePostAPI(voteType)
-        // console.log(voteType)
-        // console.log(user, 'user');
-        // console.log(postId, 'postId');
+        // (voteType)
+        // (user, 'user');
+        // (postId, 'postId');
 
         setHaveUserVotedThisTurn(true);
 
@@ -97,13 +97,13 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         }
     }, [user, totalVote, postId])
 
-    // console.log(checkIfUserVotedThisPost());
+    // (checkIfUserVotedThisPost());
 
-    // console.log(userAction, 'userActioc')
+    // (userAction, 'userActioc')
 
 
 
-    // console.log(totalVote, 'totalVote')
+    // (totalVote, 'totalVote')
 
 
 

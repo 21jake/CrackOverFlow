@@ -6,6 +6,7 @@ import { returnValueOrEmpty } from '../shared/returnValueOrEmpty';
 import moment from 'moment';
 import Axios from '../../../api/Axios';
 import { ToastError } from '../shared/Toast'
+import {sample  } from "lodash";
 // import { useEffect, useState, useRef } from 'react';
 
 const PostPreview = ({ post, hideVote }) => {
@@ -32,6 +33,9 @@ const PostPreview = ({ post, hideVote }) => {
         getPostById();
         setPostDetailModal(!postDetailModal);
     };
+    const badgeColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'light']
+
+    // (post, 'post')
 
     return (
         <Col xs="12" className="p-3">
@@ -50,9 +54,9 @@ const PostPreview = ({ post, hideVote }) => {
                     <p className="ellipsisText">
                         {returnValueOrEmpty(post?.content)}
                     </p>
-                </Col>
+                </Col>  
                 <Col xs="10" className="ml-auto d-flex justify-content-between">
-                    <Badge color="primary">Chủ đề 1</Badge>
+                    <Badge color={sample(badgeColors)}>{post?.topic?.name}</Badge>
                     <small className="font-italic ">
                         {moment(returnValueOrEmpty(post?.created_at)).format('DD/M/YYYY, h:mm')}
                     </small>

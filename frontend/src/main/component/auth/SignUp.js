@@ -70,7 +70,7 @@ export default function SignUp() {
     try {
       // setLoading(true);
       const res = await Axios.post('/auth/register', formData);
-      // console.log(res,' res');
+      // (res,' res');
       if (res && res.data.success) {
         ToastSuccess(res.data.message);
         // localStorage.setItem('crackToken', res.data.token.token)

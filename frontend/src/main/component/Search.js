@@ -5,12 +5,10 @@ import UserPreview from "../component/entities/user/UserPreview";
 import { Tab, Tabs, Typography, withStyles } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import Axios from '../api/Axios';
-import { useAuth } from '../../App'
 import { useParams } from 'react-router-dom';
 import { pickBy } from "lodash";
 
 const Search = () => {
-    const { user } = useAuth();
     const { query } = useParams();
 
     const [tabStatus, setTabStatus] = useState('POSTS');
@@ -26,7 +24,7 @@ const Search = () => {
     })
 
 
-    // console.log(user, 'user');
+    // (user, 'user');
 
 
 
@@ -35,7 +33,7 @@ const Search = () => {
             advancedSearch.query = query;
             const params = pickBy(advancedSearch);
             const res = await Axios.get(`/${tabStatus.toLowerCase()}/search`, { params });
-            console.log(res, 'res');
+            (res, 'res');
 
             if (res.status === 200) {
                 if (tabStatus === 'POSTS') {
@@ -154,6 +152,7 @@ const Search = () => {
                         users?.length ? users.map(e => (
                             <UserPreview
                                 entity={e}
+                                key={e.id}
                             />
                         )) : <Col xs="12" className="text-center m-3"> Không tìm thấy nguời dùng nào </Col>
                     }

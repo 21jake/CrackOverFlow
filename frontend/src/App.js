@@ -21,7 +21,7 @@ function App() {
   const [verifying, setVerifying] = useState(true);
   // const history = useHistory();
 
-  // console.log(user, 'user');
+  // (user, 'user');
 
 
   const fetchUserInfo = async () => {
@@ -57,7 +57,7 @@ function App() {
     setUser(null);
   }
 
-  // console.log(user);
+  // (user);
 
   return (
 

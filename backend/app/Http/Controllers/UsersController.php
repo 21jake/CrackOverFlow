@@ -36,7 +36,8 @@ class UsersController extends Controller
             $users->where('fname', 'LIKE', '%' . $input['query'] . '%')
                 ->orWhere('lname', 'LIKE', '%' . $input['query'] . '%')
                 ->orWhere('phone', 'LIKE', '%' . $input['query'] . '%')
-                ->orWhere('email', 'LIKE', '%' . $input['query'] . '%');
+                ->orWhere('email', 'LIKE', '%' . $input['query'] . '%')
+                ->orWhereRaw("CONCAT(`fname`, ' ', `lname`) LIKE ?", ['%'.$input['query'].'%']);
         }
         $data = $users->paginate(10);
         if ($data->isNotEmpty()) {

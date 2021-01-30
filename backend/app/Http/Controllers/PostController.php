@@ -32,7 +32,7 @@ class PostController extends Controller
     {
         // $postHasMostVotes = Post::has('PostVotes')->get()->findMostVotes();
         // $postHasMostVotes = Post::has('PostVotes')->get()->sortByDesc('number_of_votes')->first();
-        $fivePostsHasMostUpvotes = Post::has('postUpvotes')
+        $fivePostsHasMostUpvotes = Post::has('postUpvotes')->with('topic')
             ->whereBetween('created_at', array(Carbon::now()->subWeek(), Carbon::now()))
             ->get()->sortByDesc('number_of_upvotes')->take(5);
         // dd($fivePostsHasMostUpvotes);
@@ -48,7 +48,7 @@ class PostController extends Controller
     public function search(Request $request)
     {
         $input = $request->all();
-        $posts = Post::orderBy('created_at', 'desc');
+        $posts = Post::orderBy('created_at', 'desc')->with('topic');
 
         // if (isset($input['query'])) {
         //    $posts->where('title','LIKE', '%'.$input['query'].'%')

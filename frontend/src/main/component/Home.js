@@ -34,7 +34,7 @@ const Home = () => {
     const debouncedQuery = useDebounce(query, 500);
 
 
-    // console.log(user, 'user');
+    // (user, 'user');
     useEffect(() => {
         if (user && user.topics.length) {
             const output = user.topics.map(e => e.id);
@@ -50,11 +50,11 @@ const Home = () => {
                 const params = pickBy(advancedSearch);
                 let res;
                 if (tabStatus === "INTERESTED") {
-                    // console.log(params, 'params');
+                    // (params, 'params');
                     res = await Axios.get(`/posts/search?topics=${interestedTopics}`, { params })
 
                 } else if (tabStatus === "ALL") {
-                    // console.log(paramsWithoutTopics, 'paramsWithoutTopics');
+                    // (paramsWithoutTopics, 'paramsWithoutTopics');
                     res = await Axios.get("/posts/search", { params })
                 }
 
@@ -84,6 +84,7 @@ const Home = () => {
             console.log(error);
         }
     }
+    (topPosts, 'topPosts');
 
     useEffect(() => {
         getPosts();

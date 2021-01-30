@@ -8,7 +8,7 @@ import { useAuth } from "../../../../App";
 import PostDetail from '../post/PostDetail';
 import DeleteModal from '../shared/DeleteModal';
 import { useHistory } from 'react-router-dom';
-
+import RandomAvatar from "./../shared/RandomAvatar";
 
 
 const Comment = (props) => {
@@ -84,7 +84,7 @@ const Comment = (props) => {
             </Col>
             <Col xs="2" >
                 <div >
-                    <Avatar>T</Avatar>
+                    <RandomAvatar letter={entity?.user.fname[0]}/>
                 </div>
             </Col>
             <Col xs="10">

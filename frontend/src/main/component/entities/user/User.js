@@ -50,7 +50,7 @@ const User = () => {
         try {
             const res = await Axios.get(`/comments/user/${user?.id}`);
             if (res.status === 200) {
-                console.log(res, 'res')
+                (res, 'res')
                 if (res.data.data.data.length) {
                     setComments(res.data.data.data);
                 } else {
@@ -66,7 +66,7 @@ const User = () => {
         try {
             const res = await Axios.get(`/posts/search?topics=${JSON.stringify(interestedTopics)}`);
             if (res.status === 200) {
-                console.log(res, 'res')
+                (res, 'res')
                 if (res.status === 200) {
                     setSuggestedPosts(res.data.data.data);
                 } else {
@@ -85,7 +85,7 @@ const User = () => {
         }
     }, [user])
 
-    // console.log(suggestedPost, 'suggestedPost')
+    // (suggestedPost, 'suggestedPost')
 
     const handlePaginationChange = (event, value) => {
         setPaginationState({ ...paginationState, currentPage: value })
@@ -95,7 +95,7 @@ const User = () => {
         getPosts();
     }, [JSON.stringify(paginationState)]);
 
-    // console.log(user, 'user')
+    // (user, 'user')
     return (
         <Container className="themed-container p-5">
             <Row>
