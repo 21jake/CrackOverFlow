@@ -66,6 +66,7 @@ const PostPreview = ({ post, hideVote }) => {
                 post={entity}
                 modal={postDetailModal}
                 toggle={() => toggleDetailModal()}
+                reFetchData={() => getPostById()}
             />
         </Col>
     )

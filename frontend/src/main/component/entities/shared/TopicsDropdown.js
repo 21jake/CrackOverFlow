@@ -62,6 +62,7 @@ const TopicsDropdown = (props) => {
             </Label>
             <Select 
                 onChange={props.onTopicsChange}
+                value={props.defaultOption}
                 options={topics}
                 isMulti={props.isMultiple}
                 placeholder="Danh sách chủ đề"

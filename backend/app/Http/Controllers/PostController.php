@@ -21,7 +21,7 @@ class PostController extends Controller
     }
     public function getPost($postId)
     {
-        $post = Post::where('id', $postId)->with('comments')->first();
+        $post = Post::where('id', $postId)->with('comments', 'topic')->first();
         if ($post) {
             return GetdataOutput(1, 200, 'Tìm thấy bài đăng', $post);
         } else {
@@ -160,6 +160,8 @@ class PostController extends Controller
         $checker = $post->update([
             'title' => $input['title'],
             'content' => $input['content'],
+            'topic_id' => $input['topic_id'],
+
         ]);
         if ($checker) {
             return GetdataOutput(1, 200, 'Cập nhật câu hỏi thành công', $post);

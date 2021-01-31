@@ -15,7 +15,6 @@ code {
   font-size: 75%;
 }
 .modal-dialog.postDetailModal {
-  /* width: 90%; */
   max-width: 70vw;
 }
 .modal-dialog.deleteModal {
@@ -33,4 +32,18 @@ code {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+.DropdownToggle {
+  background-color: white;
+  border-radius: 5px;
+  width: 28px;
+  height: 28px;
+  padding: 0 !important;
+  /* padding: 0 5px; */
+}
+.deleteIcon:hover {
+  color: red;
+}
+.editIcon:hover {
+  color:rgb(255, 215, 85);
 }

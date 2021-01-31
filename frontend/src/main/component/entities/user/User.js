@@ -50,7 +50,6 @@ const User = () => {
         try {
             const res = await Axios.get(`/comments/user/${user?.id}`);
             if (res.status === 200) {
-                (res, 'res')
                 if (res.data.data.data.length) {
                     setComments(res.data.data.data);
                 } else {
@@ -66,7 +65,6 @@ const User = () => {
         try {
             const res = await Axios.get(`/posts/search?topics=${JSON.stringify(interestedTopics)}`);
             if (res.status === 200) {
-                (res, 'res')
                 if (res.status === 200) {
                     setSuggestedPosts(res.data.data.data);
                 } else {
@@ -164,8 +162,8 @@ const User = () => {
                                 Các bình luận gần đây
                         </span>
                         </Col>
-                        <Col xs="12" className="m-3">
-                            <div className="border border-secondary rounded m-3">
+                        <Col xs="11" className="ml-auto">
+                            <Row className="border border-secondary rounded ">
                                 {comments?.length ?
                                     comments.map(e =>
                                         <Comment
@@ -175,7 +173,7 @@ const User = () => {
                                     )
                                     : <p className="text-center m-3"> Không có bình luận nào </p>
                                 }
-                            </div>
+                            </Row>
 
                         </Col>
                     </Row>

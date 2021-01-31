@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
-// import { deepOrange, deepPurple } from '@material-ui/core/colors';
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { AvGroup, AvInput, AvFeedback, AvForm } from 'availity-reactstrap-validation';
 import Comment from './Comment';
 import Axios from '../../../api/Axios';
@@ -13,12 +11,12 @@ const CommentWrapper = (props) => {
     const [comments, setComments] = useState([]);
     const formRef = useRef();
     const {user} = useAuth();
+    
 
     const getComments = async () => {
         try {
             const res = await Axios.get(`/comments/post/${postId}`);
             if (res.status === 200) {
-                // (res, 'res')
                 if (res.data.data.length) {
                     setComments(res.data.data);
                 } else {
@@ -42,7 +40,6 @@ const CommentWrapper = (props) => {
         try {
             const res = await Axios.post('comments/create', data);
             if (res.status === 200) {
-                (res, 'res');
                 setComments([...comments, res.data.data]);
                 formRef.current.reset();
             } else {
@@ -58,32 +55,33 @@ const CommentWrapper = (props) => {
             value.post_id = postId;
             value.user_id = user.id;
             value.parent_comment_id = null;
-            (value, 'value');
             submitComment(value);
         }
     }
 
 
     return (
-        <Row className="p-3 m-3">
-            {
-                comments.length ? (
-                    comments.map(e => (
-                        <Comment 
-                            clickDisplayPost={false}
-                            key={e.id}
-                            entity= {e}
-                            isShort={false}
-                        />
-                    ))
-                ): (
-                    <p>Trở thành người đầu tiên bình luận bài đăng này</p>
-                )
-            }
+        <Row className="p-1 m-3">
+            <Col xs="12">
+                {
+                    comments.length ? (
+                        comments.map(e => (
+                            <Comment
+                                clickDisplayPost={false}
+                                key={e.id}
+                                entity={e}
+                                isShort={false}
+                                reFetchData={getComments}
+                            />
+                        ))
+                    ) : (
+                            <p>Trở thành người đầu tiên bình luận bài đăng này</p>
+                        )
+                }
+            </Col>
 
-            {/* <Comment /> */}
 
-            <Col xs="11" className="ml-auto mt-3">
+            <Col xs="12" className="mt-3">
                 <AvForm style={{ width: '100%' }} ref={formRef} onSubmit={handleSubmitComment}>
                     <AvGroup>
                         <AvInput

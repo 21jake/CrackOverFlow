@@ -50,7 +50,6 @@ const PostCreate = (props) => {
         } catch (error) {
             console.log(error)
         }
-
     }
 
     const onFormSubmit = (event, errors, value) => {
@@ -80,7 +79,6 @@ const PostCreate = (props) => {
                         />
                     </Col>
                 </Row>
-                {/* chứa ít nhất 10 ký tự */}
                 <Row className="m-3">
                     <Col xs="12">
                         <AvForm onSubmit={onFormSubmit} ref={formRef}>

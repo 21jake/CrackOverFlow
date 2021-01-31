@@ -72,10 +72,7 @@ class CommentController extends Controller
             return GetdataOutput(1, 400, 'Bình luận không tồn tại', '');
         }
         $checker = $comment->update([
-            'post_id' => $input['post_id'],
             'content' => $input['content'],
-            'user_id' => $input['user_id'],
-            'parent_comment_id' => $input['parent_comment_id']
         ]);
         if ($checker) {
             return GetdataOutput(1, 200, 'Cập nhật bình luận thành công', $comment);
