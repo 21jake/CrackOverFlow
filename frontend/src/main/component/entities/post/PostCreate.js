@@ -7,6 +7,8 @@ import { checkUserLoggedIn } from '../shared/checkUserLoggedIn';
 import Axios from '../../../api/Axios';
 import { useAuth } from '../../../../App';
 import { useHistory } from 'react-router-dom';
+import { createPost, resetPost, triggerSearchOn } from "../../../actions/Posts";
+import { connect } from "react-redux";
 
 const PostCreate = (props) => {
     const [topic, setTopic] = useState(null);
@@ -23,13 +25,20 @@ const PostCreate = (props) => {
         }
     }, [props.modal])
 
+    useEffect(() => {
+        if (props.postUpdateSuccess && props.modal) {
+            props.resetPost();
+            props.triggerSearchOn();
+            props.toggle();
+            clearForm();
+        }
+    }, [props.postUpdateSuccess])
 
     const onTopicsChange = (e) => {
         if (e) {
             setTopic(e.value);
         } else {
             setTopic(undefined);
-
         }
     }
 
@@ -37,19 +46,23 @@ const PostCreate = (props) => {
         formRef.current.reset();
     }
 
-    const submitPost = async (data) => {
-        try {
-            const res = await Axios.post('/posts/create', data);
-            if (res.status === 200) {
-                ToastSuccess(res.data.message);
-                props.toggle();
-                clearForm();
-            } else {
-                ToastError(res.data.message);
-            }
-        } catch (error) {
-            console.log(error)
-        }
+    // const submitPost = async (data) => {
+    //     try {
+    //         const res = await Axios.post('/posts/create', data);
+    //         if (res.status === 200) {
+    //             ToastSuccess(res.data.message);
+    //             props.toggle();
+    //             clearForm();
+    //         } else {
+    //             ToastError(res.data.message);
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    const submitPost = data => {
+        props.createPost(data);
     }
 
     const onFormSubmit = (event, errors, value) => {
@@ -111,4 +124,16 @@ const PostCreate = (props) => {
     )
 }
 
-export default PostCreate;
+const mapStateToProps = (state) => {
+    return {
+        postUpdateSuccess: state.post.updateSuccess
+    }
+}
+
+const mapDispatchToProps = {
+    createPost, 
+    resetPost,
+    triggerSearchOn
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostCreate);

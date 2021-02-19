@@ -73,11 +73,9 @@ export default function SignUp() {
       // (res,' res');
       if (res && res.data.success) {
         ToastSuccess(res.data.message);
-        // localStorage.setItem('crackToken', res.data.token.token)
         login(res.data.user, res.data.token.token);
         return history.push('/')
         // return <Redirect to='/' />
-
       } else {
         ToastError(res.data.message);
       }

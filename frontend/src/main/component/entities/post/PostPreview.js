@@ -58,7 +58,7 @@ const PostPreview = ({ post, hideVote }) => {
                 <Col xs="10" className="ml-auto d-flex justify-content-between">
                     <Badge color={sample(badgeColors)}>{post?.topic?.name}</Badge>
                     <small className="font-italic ">
-                        {moment(returnValueOrEmpty(post?.created_at)).format('DD/M/YYYY, h:mm')}
+                        {moment(returnValueOrEmpty(post?.created_at)).format('DD/M/YYYY, HH:mm')}
                     </small>
                 </Col>
             </Row>

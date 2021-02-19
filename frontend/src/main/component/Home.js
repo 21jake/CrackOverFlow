@@ -4,23 +4,22 @@ import PostPreview from '../component/entities/post/PostPreview'
 import { InputAdornment, TextField, Tab, Tabs, Typography, withStyles } from '@material-ui/core';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { startingDay, finalDay } from './entities/shared/FirstAndLastDaysOfMonth'
 import useDebounce from './entities/shared/useDebounce';
-
 import Pagination from '@material-ui/lab/Pagination';
 import TopicsDropdown from '../component/entities/shared/TopicsDropdown'
-import Axios from '../api/Axios';
 import { useAuth } from '../../App'
 import { pickBy, omit } from 'lodash';
+import { fetchPosts, fetchHotPosts, triggerSearchOff } from "../actions/Posts";
+import { connect } from "react-redux";
 
-const Home = () => {
+const Home = (props) => {
+    const { posts, totalPosts, topPosts, shouldSearchPosts } = props;
     const { user } = useAuth();
-    const [tabStatus, setTabStatus] = useState('ALL');
-    const [totalPage, setTotalPage] = useState(1);
-    const [posts, setPosts] = useState([]);
-    const [topPosts, setTopPosts] = useState([]);
-    const [interestedTopics, setInterestedTopics] = useState(undefined);
+    const [query, setQuery] = useState('');
+    const debouncedQuery = useDebounce(query, 500);
 
+    const [tabStatus, setTabStatus] = useState('ALL');
+    const [interestedTopics, setInterestedTopics] = useState(undefined);
     const [advancedSearch, setAdvancedSearch] = useState({
         query: '',
         topic: undefined,
@@ -30,11 +29,8 @@ const Home = () => {
         itemsPerPage: 10
     })
 
-    const [query, setQuery] = useState('');
-    const debouncedQuery = useDebounce(query, 500);
+    const totalPage = Math.ceil(totalPosts / advancedSearch.itemsPerPage);
 
-
-    // (user, 'user');
     useEffect(() => {
         if (user && user.topics.length) {
             const output = user.topics.map(e => e.id);
@@ -42,53 +38,35 @@ const Home = () => {
         }
     }, [user?.topics])
 
-
-    const getPosts = async () => {
-        try {
-            if (!debouncedQuery.length || debouncedQuery.length >= 3) {
-                advancedSearch.query = debouncedQuery;
-                const params = pickBy(advancedSearch);
-                let res;
-                if (tabStatus === "INTERESTED") {
-                    // (params, 'params');
-                    res = await Axios.get(`/posts/search?topics=${interestedTopics}`, { params })
-
-                } else if (tabStatus === "ALL") {
-                    // (paramsWithoutTopics, 'paramsWithoutTopics');
-                    res = await Axios.get("/posts/search", { params })
-                }
-
-                if (res.status === 200) {
-                    setPosts(res.data.data.data);
-                    const total = Math.ceil(res.data.data.total / advancedSearch.itemsPerPage);
-                    setTotalPage(total);
-                } else {
-                    // ToastError(res.data.message)
-                    setPosts([])
-                }
+    const getPosts = () => {
+        if (!debouncedQuery.length || debouncedQuery.length >= 3) {
+            advancedSearch.query = debouncedQuery;
+            const params = pickBy(advancedSearch);
+            const field = JSON.stringify(params);
+            if (tabStatus === "INTERESTED") {
+                props.fetchPosts(field, interestedTopics)
+            } else if (tabStatus === "ALL") {
+                props.fetchPosts(field, null)
             }
-        } catch (error) {
-            console.log(error);
         }
     }
-    const getHotPosts = async () => {
-        try {
-            const res = await Axios.get(`/posts/hotPosts`);
-            if (res.status === 200) {
-                const output = Object.values(res.data.data);
-                setTopPosts(output);
-            } else {
-                console.log(res.data.message);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+
+
+    const getHotPosts = () => {
+        props.fetchHotPosts();
     }
-    (topPosts, 'topPosts');
 
     useEffect(() => {
         getPosts();
     }, [JSON.stringify(advancedSearch), debouncedQuery, tabStatus]);
+
+    useEffect(() => {
+        if (shouldSearchPosts) {
+            getPosts();
+            getHotPosts();
+            props.triggerSearchOff();
+        }
+    }, [shouldSearchPosts])
 
     useEffect(() => {
         getHotPosts();
@@ -259,7 +237,7 @@ const Home = () => {
                             </div>
                             <div className="home_hotPosts">
                                 {
-                                    topPosts.length && topPosts.map(e => (
+                                    topPosts?.length && topPosts.map(e => (
                                         <PostPreview
                                             hideVote={true}
                                             key={e.id}
@@ -276,5 +254,19 @@ const Home = () => {
         </Container>
     )
 }
+const mapStateToProps = (state) => {
+    return {
+        posts: state.post.entities,
+        totalPosts: state.post.totalItems,
+        topPosts: state.post.hotEntities,
+        shouldSearchPosts: state.post.shouldSearchEntities
+    }
+}
 
-export default Home;
+const mapDispatchToProps = {
+    fetchPosts,
+    fetchHotPosts,
+    triggerSearchOff
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
