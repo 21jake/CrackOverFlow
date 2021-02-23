@@ -4,27 +4,17 @@ import { Col, Row, Badge } from 'reactstrap';
 import PostDetail from './PostDetail';
 import { returnValueOrEmpty } from '../shared/returnValueOrEmpty';
 import moment from 'moment';
-import Axios from '../../../api/Axios';
-import { ToastError } from '../shared/Toast'
-import {sample  } from "lodash";
+import { sample } from "lodash";
+import { connect } from 'react-redux';
+import { fetchPost } from '../../../actions/Posts';
 // import { useEffect, useState, useRef } from 'react';
 
-const PostPreview = ({ post, hideVote }) => {
+const PostPreview = (props) => {
+    const { post, hideVote, entity } = props
 
-    const [entity, setEntity] = useState(null);
+    const getPostById = () => {
+        props.fetchPost(post.id);
 
-    const getPostById = async () => {
-
-        try {
-            const res = await Axios.get(`/posts/detail/${post?.id}`);
-            if (res.status === 200) {
-                setEntity(res.data.data);
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     const [postDetailModal, setPostDetailModal] = useState(false);
@@ -54,7 +44,7 @@ const PostPreview = ({ post, hideVote }) => {
                     <p className="ellipsisText">
                         {returnValueOrEmpty(post?.content)}
                     </p>
-                </Col>  
+                </Col>
                 <Col xs="10" className="ml-auto d-flex justify-content-between">
                     <Badge color={sample(badgeColors)}>{post?.topic?.name}</Badge>
                     <small className="font-italic ">
@@ -72,4 +62,14 @@ const PostPreview = ({ post, hideVote }) => {
     )
 }
 
-export default PostPreview;
+const mapStateToProps = state => {
+    return {
+        entity: state.post.entity
+    }
+}
+const mapDispatchToProps = {
+    fetchPost
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostPreview);

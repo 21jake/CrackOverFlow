@@ -11,14 +11,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import TopicsDropdown from '../shared/TopicsDropdown';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import Axios from '../../../api/Axios';
-import { ToastError, ToastSuccess } from '../shared/Toast'
-// import { useEffect, useState, useRef } from 'react';
-
+import { ToastError } from '../shared/Toast'
+import { deletePost, triggerSearchOn, editPost } from "../../../actions/Posts";
+import { connect } from "react-redux";
 
 const PostDetail = (props) => {
     const editForm = useRef();
-    const { post } = props;
+    const { post, postUpdateSuccess } = props;
     const [comments, setComments] = useState([]);
     const { user } = useAuth();
     const [deleteModal, setDeleteModal] = useState(false);
@@ -28,7 +27,7 @@ const PostDetail = (props) => {
         value: ''
     })
     const [editFormDisplay, setEditFormDisplay] = useState(false);
-    // const editFormDisplay = useRef(true);
+    const [userIntent, setUserIntent] = useState(undefined)
 
     const toggleDeleteModal = () => setDeleteModal(!deleteModal);
     const deleteModalVisible = () => {
@@ -49,58 +48,59 @@ const PostDetail = (props) => {
         }
     }, [post?.comments])
 
-
-    const handleDeletePost = async () => {
-        try {
-            const res = await Axios.delete(`/posts/delete/${post.id}`);
-            if (res.status === 200) {
-                // setPostEntity(res.data.data);
-                setDeleteModal(false);
-                props.toggle();
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
     const badgeColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light']
     const onTopicsChange = (e) => {
         if (e) {
             setDefaultTopic(e);
         } else {
-            // setDefaultTopic({value: '', label: ''});
             setDefaultTopic(undefined);
         }
     }
     const clearForm = () => {
         editForm.current.reset();
     }
-    const handleEditPost = async (event, errors, value) => {
+    const handleEditPost = (event, errors, value) => {
         if (!defaultTopic) {
             ToastError("Vui lòng chọn chủ đề cho bài đăng");
             return
         }
         if (!errors.length) {
+            setUserIntent("EDIT_POST");
             value.id = post.id
             value.topic_id = defaultTopic.value
-            try {
-                const res = await Axios.put('/posts/update', value);
-                if (res.status === 200) {
-                    ToastSuccess(res.data.message);
-                    setEditFormDisplay(false);
-                    props.reFetchData();
-                    clearForm();
-                } else {
-                    ToastError(res.data.message);
-                }
-            } catch (error) {
-                console.log(error)
-            }
+            props.editPost(value);
 
         }
     }
-    // console.log(editFormDisplay.current, 'editform');
+    const handleDeletePost = () => {
+        setUserIntent("DELETE_POST");
+        props.deletePost(post.id)
+    }
+    const handleUserIntent = () => {
+        switch (userIntent) {
+            case "DELETE_POST":
+                props.triggerSearchOn();
+                setDeleteModal(false);
+                props.toggle();
+                // ToastSuccess("Xóa bài đăng thành công")
+                break;
+            case "EDIT_POST":
+                props.triggerSearchOn();
+                setEditFormDisplay(false);
+                props.reFetchData();
+                clearForm();
+                break;
+            default:
+                break;
+        }
+    }
+
+    useEffect(() => {
+        if (postUpdateSuccess && props.modal) {
+            handleUserIntent();
+            setUserIntent(undefined);
+        }
+    }, [postUpdateSuccess])
 
     return (
         <Modal className="m-3" isOpen={props.modal} toggle={() => props.toggle()} className="postDetailModal">
@@ -219,5 +219,14 @@ const PostDetail = (props) => {
         </Modal>
     )
 }
-
-export default PostDetail;
+const mapStateToProps = state => {
+    return {
+        postUpdateSuccess: state.post.updateSuccess
+    }
+}
+const mapDispatchToProps = {
+    deletePost,
+    triggerSearchOn,
+    editPost
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);

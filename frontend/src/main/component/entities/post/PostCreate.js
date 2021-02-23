@@ -46,20 +46,6 @@ const PostCreate = (props) => {
         formRef.current.reset();
     }
 
-    // const submitPost = async (data) => {
-    //     try {
-    //         const res = await Axios.post('/posts/create', data);
-    //         if (res.status === 200) {
-    //             ToastSuccess(res.data.message);
-    //             props.toggle();
-    //             clearForm();
-    //         } else {
-    //             ToastError(res.data.message);
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 
     const submitPost = data => {
         props.createPost(data);

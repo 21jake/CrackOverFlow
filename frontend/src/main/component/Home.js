@@ -40,6 +40,7 @@ const Home = (props) => {
 
     const getPosts = () => {
         if (!debouncedQuery.length || debouncedQuery.length >= 3) {
+            window.scrollTo(0, 0);
             advancedSearch.query = debouncedQuery;
             const params = pickBy(advancedSearch);
             const field = JSON.stringify(params);
