@@ -5,7 +5,7 @@ import {
     FETCH_HOT_POSTS, TRIGGER_SEARCH_POSTS_OFF, TRIGGER_SEARCH_POSTS_ON, 
     DELETE_POST, EDIT_POST
 } from './types';
-import { ToastSuccess, ToastError } from '../../main/component/entities/shared/Toast'
+import { ToastSuccess } from '../../main/component/entities/shared/Toast'
 import _ from "lodash";
 
 export const createPost = values => async (dispatch) => {

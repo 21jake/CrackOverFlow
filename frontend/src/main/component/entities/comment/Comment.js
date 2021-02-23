@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import moment from 'moment';
 import Axios from '../../../api/Axios';
@@ -11,35 +11,27 @@ import RandomAvatar from "./../shared/RandomAvatar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { AvGroup, AvInput, AvFeedback, AvForm } from 'availity-reactstrap-validation';
+import { deleteComment, editComment, triggerFetchOn, resetComment } from "../../../actions/Comments";
+import { fetchPost } from "../../../actions/Posts";
+import { connect } from 'react-redux';
+
 
 const Comment = (props) => {
-    const { entity, isShort, clickDisplayPost, reFetchData } = props;
-    const [postEntity, setPostEntity] = useState(null);
+    const { entity, isShort, clickDisplayPost, postEntity, commentUpdateSuccess, setSubmitFormVisibility } = props;
+    // const [postEntity, setPostEntity] = useState(null);
     const [deleteModal, setDeleteModal] = useState(false);
     const { user } = useAuth();
     const history = useHistory();
     const [actionDropdown, setActionDropdown] = useState(false);
     const [editFormDisplay, setEditFormDisplay] = useState(false);
-    const editForm = useRef()
+    const editForm = useRef();
+    const [userIntent, setUserIntent] = useState(undefined)
 
-
-    const getPostById = async () => {
-        try {
-            const res = await Axios.get(`/posts/detail/${entity.post_id}`);
-            if (res.status === 200) {
-                setPostEntity(res.data.data);
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     const [postDetailModal, setPostDetailModal] = useState(false);
     const toggleDetailModal = () => setPostDetailModal(!postDetailModal);
     const detailModalVisible = () => {
-        getPostById();
+        props.fetchPost(entity.post_id)
         setPostDetailModal(!postDetailModal);
     };
     const toggleDeleteModal = () => setDeleteModal(!deleteModal);
@@ -47,20 +39,15 @@ const Comment = (props) => {
         setDeleteModal(!deleteModal);
     };
 
-    const handleDeleteComment = async () => {
-        try {
-            const res = await Axios.delete(`/comments/delete/${entity?.id}`);
-            if (res.status === 200) {
-                setDeleteModal(false);
-                reFetchData()
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
+    const onEditButtonClick = () => {
+        setEditFormDisplay(true)
+        setSubmitFormVisibility(false);
     }
 
+    const handleDeleteComment = () => {
+        props.deleteComment(entity?.id);
+        setUserIntent("DELETE_COMMENT");
+    }
     const handleRedirect = inputId => {
         if (inputId === user.id) {
             history.push('/current');
@@ -73,26 +60,37 @@ const Comment = (props) => {
     const clearForm = () => {
         editForm.current.reset();
     }
-    const handleEditComment = async (event, errors, value) => {
 
+    const handleEditComment = (event, errors, value) => {
         if (!errors.length) {
             value.id = entity.id
-            try {
-                const res = await Axios.put('/comments/update', value);
-                if (res.status === 200) {
-                    ToastSuccess(res.data.message);
-                    setEditFormDisplay(false);
-                    reFetchData();
-                    clearForm();
-                } else {
-                    ToastError(res.data.message);
-                }
-            } catch (error) {
-                console.log(error)
-            }
-
+            props.editComment(value);
+            setUserIntent("EDIT_COMMENT");
         }
     }
+
+    const handleUserIntent = () => {
+        switch (userIntent) {
+            case "EDIT_COMMENT":
+                setEditFormDisplay(false);
+                setSubmitFormVisibility(true);
+                clearForm();
+                break;
+            case "DELETE_COMMENT":
+                setDeleteModal(false);
+                break;
+            default:
+                break;
+        }
+    }
+    useEffect(() => {
+        if (commentUpdateSuccess) {
+            props.triggerFetchOn();
+            handleUserIntent();
+            setUserIntent(undefined)
+        }
+    }, [commentUpdateSuccess])
+
 
     return (
         <Row className="mt-3"
@@ -129,7 +127,7 @@ const Comment = (props) => {
                                     <span className="text-muted">Xoá bình luận</span>
                                 </DropdownItem>
                                 <DropdownItem
-                                 onClick={() => setEditFormDisplay(true)}
+                                    onClick={onEditButtonClick}
                                 >
                                     <FontAwesomeIcon icon={faEdit} className="mr-3 editIcon" />
                                     <span className="text-muted">Sửa bình luận</span>
@@ -150,7 +148,7 @@ const Comment = (props) => {
                 </p>
             </Col>
             <Col xs="12" className={editFormDisplay ? 'mt-3' : 'd-none'}>
-                <AvForm style={{ width: '100%' }} 
+                <AvForm style={{ width: '100%' }}
                     model={entity}
                     onSubmit={handleEditComment}
                     ref={editForm}
@@ -178,10 +176,23 @@ const Comment = (props) => {
                 post={postEntity}
                 modal={postDetailModal}
                 toggle={() => toggleDetailModal()}
-                reFetchData={() => getPostById()}
             />
         </Row>
     );
 }
 
-export default Comment;
+const mapStateToProps = state => {
+    return {
+        postEntity: state.post.entity,
+        commentUpdateSuccess: state.comment.updateSuccess,
+    }
+}
+const mapDispatchToProps = {
+    deleteComment,
+    editComment,
+    fetchPost,
+    triggerFetchOn,
+    resetComment
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

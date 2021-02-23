@@ -209,7 +209,7 @@ const Home = (props) => {
                 </Col>
             </Row>
             <Row className="p-3">
-                <Col sm="12" md="9">
+                <Col lg="9" md="12">
                     <Row className="mt-3 home_postSection">
                         {
                             posts?.length ? posts.map(e => (
@@ -229,7 +229,7 @@ const Home = (props) => {
                             shape="rounded" />
                     </Row>
                 </Col>
-                <Col sm="3" md="0">
+                <Col lg="3" md="0">
                     {/* Ads and recruitment section */}
                     <Row>
                         <Col xs="12" className="border p-3">

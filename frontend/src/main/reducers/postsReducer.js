@@ -43,7 +43,8 @@ export default (state = initialState, action) => {
         case TRIGGER_SEARCH_POSTS_OFF:
             return {
                 ...state,
-                shouldSearchEntities: false
+                shouldSearchEntities: false,
+                updateSuccess: false
             }
         case RESET_POST: 
             return {

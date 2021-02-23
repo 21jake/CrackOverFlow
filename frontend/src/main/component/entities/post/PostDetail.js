@@ -13,6 +13,8 @@ import TopicsDropdown from '../shared/TopicsDropdown';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastError } from '../shared/Toast'
 import { deletePost, triggerSearchOn, editPost } from "../../../actions/Posts";
+import { triggerFetchOn as triggerFetchCommentsOn } from "../../../actions/Comments";
+
 import { connect } from "react-redux";
 
 const PostDetail = (props) => {
@@ -87,7 +89,7 @@ const PostDetail = (props) => {
             case "EDIT_POST":
                 props.triggerSearchOn();
                 setEditFormDisplay(false);
-                props.reFetchData();
+                props.triggerFetchCommentsOn();
                 clearForm();
                 break;
             default:
@@ -227,6 +229,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     deletePost,
     triggerSearchOn,
-    editPost
+    editPost,
+    triggerFetchCommentsOn
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);

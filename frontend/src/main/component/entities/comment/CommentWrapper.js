@@ -1,61 +1,45 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Row, Col, Button } from 'reactstrap';
 import { AvGroup, AvInput, AvFeedback, AvForm } from 'availity-reactstrap-validation';
 import Comment from './Comment';
-import Axios from '../../../api/Axios';
-import { ToastError } from '../../entities/shared/Toast'
-import {useAuth} from "../../../../App";
+import { useAuth } from "../../../../App";
+import { createComment, fetchPostComments, triggerFetchOff, triggerFetchOn, resetComment } from "../../../actions/Comments";
+import { connect } from 'react-redux';
 
 const CommentWrapper = (props) => {
-    const { postId } = props;
-    const [comments, setComments] = useState([]);
+    const { postId, comments, shouldSearchComments, commentUpdateSuccess } = props;
     const formRef = useRef();
-    const {user} = useAuth();
-    
+    const { user } = useAuth();
+    const [formVisibility, setFormVisibility] = useState(true);
 
-    const getComments = async () => {
-        try {
-            const res = await Axios.get(`/comments/post/${postId}`);
-            if (res.status === 200) {
-                if (res.data.data.length) {
-                    setComments(res.data.data);
-                } else {
-                    setComments([]);
-                }
-
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
+    useEffect(() => {
+        if (shouldSearchComments) {
+            props.fetchPostComments(postId)
+            props.triggerFetchOff();
         }
-    }
+    }, [shouldSearchComments])
+
     useEffect(() => {
         if (postId) {
-            getComments();
+            props.fetchPostComments(postId)
         }
     }, [postId])
 
-    const submitComment = async (data) => {
-        try {
-            const res = await Axios.post('comments/create', data);
-            if (res.status === 200) {
-                setComments([...comments, res.data.data]);
-                formRef.current.reset();
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
+    useEffect(() => {
+        if (commentUpdateSuccess) {
+            formRef.current.reset();
         }
-    }
+    }, [commentUpdateSuccess])
+
+
 
     const handleSubmitComment = (event, errors, value) => {
         if (!errors.length) {
             value.post_id = postId;
             value.user_id = user.id;
             value.parent_comment_id = null;
-            submitComment(value);
+            props.createComment(value);
+            props.triggerFetchOn();
         }
     }
 
@@ -71,7 +55,8 @@ const CommentWrapper = (props) => {
                                 key={e.id}
                                 entity={e}
                                 isShort={false}
-                                reFetchData={getComments}
+                                setSubmitFormVisibility={(value) => setFormVisibility(value)}
+                                // reFetchData={() => props.fetchPostComments(postId)}
                             />
                         ))
                     ) : (
@@ -81,7 +66,7 @@ const CommentWrapper = (props) => {
             </Col>
 
 
-            <Col xs="12" className="mt-3">
+            <Col xs="12" className={formVisibility ? 'mt-3' : 'd-none'}>
                 <AvForm style={{ width: '100%' }} ref={formRef} onSubmit={handleSubmitComment}>
                     <AvGroup>
                         <AvInput
@@ -104,4 +89,19 @@ const CommentWrapper = (props) => {
     )
 }
 
-export default CommentWrapper;
+const mapStateToProps = state => {
+    return {
+        comments: state.comment.entities,
+        shouldSearchComments: state.comment.shouldSearchEntities,
+        commentUpdateSuccess: state.comment.updateSuccess
+    }
+}
+const mapDispatchToProps = {
+    createComment,
+    fetchPostComments,
+    triggerFetchOff,
+    triggerFetchOn,
+    resetComment
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentWrapper);
