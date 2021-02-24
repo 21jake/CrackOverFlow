@@ -60,10 +60,6 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         }
         setUserAction(voteType)
         callVoteAPI(voteType);
-        // votePostAPI(voteType)
-        // (voteType)
-        // (user, 'user');
-        // (postId, 'postId');
 
         setHaveUserVotedThisTurn(true);
 
@@ -75,7 +71,6 @@ const Vote = ({ totalVote, postId, hideVote }) => {
                 setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 1 : stateTotalVote - 1);
             }
         } else if (checkIfUserVotedThisPost() === "UPVOTE") {
-
             setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 2 : stateTotalVote - 2);
         } else if (checkIfUserVotedThisPost() === "DOWNVOTE") {
             setStateTotalVote(voteType === "UPVOTE" ? stateTotalVote + 2 : stateTotalVote - 2);
@@ -97,13 +92,6 @@ const Vote = ({ totalVote, postId, hideVote }) => {
         }
     }, [user, totalVote, postId])
 
-    // (checkIfUserVotedThisPost());
-
-    // (userAction, 'userActioc')
-
-
-
-    // (totalVote, 'totalVote')
 
 
 
@@ -125,7 +113,6 @@ const Vote = ({ totalVote, postId, hideVote }) => {
 
             </Col>
             <Col xs="12">
-                {/* {returnTotalVotes(totalVote)} */}
                 {stateTotalVote}
             </Col>
             <Col xs="12" >
@@ -133,7 +120,6 @@ const Vote = ({ totalVote, postId, hideVote }) => {
                     className="p-0"
                     color="transparent"
                     disabled={userAction === "DOWNVOTE"}
-                    // className={hideVote ? "d-none" : "" }
                     onClick={() => handleVoting('DOWNVOTE')}>
                     <FontAwesomeIcon
                         color={userAction === "DOWNVOTE" ? 'orange' : ''}

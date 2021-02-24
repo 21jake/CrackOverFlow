@@ -18,3 +18,11 @@ export const DELETE_COMMENT = "DELETE_COMMENT";
 export const RESET_COMMENT = "RESET_COMMENT";
 export const TRIGGER_FETCH_COMMENTS_ON = "TRIGGER_FETCH_COMMENTS_ON"  // Under some circumstances, we need to trigger the FETCH again, eg: After creating a new post.
 export const TRIGGER_FETCH_COMMENTS_OFF = "TRIGGER_FETCH_COMMENTS_OFF"
+
+
+// USER ACTIONS
+export const FETCH_USER_COMMENTS = "FETCH_USER_COMMENTS";
+export const FETCH_USER_POSTS = "FETCH_USER_POSTS";
+export const FETCH_USER_SUGGESTED_POSTS = "FETCH_USER_SUGGESTED_POSTS";
+export const RESET_USER = "RESET_USER";
+

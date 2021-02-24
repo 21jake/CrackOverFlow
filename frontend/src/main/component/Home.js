@@ -32,7 +32,7 @@ const Home = (props) => {
     const totalPage = Math.ceil(totalPosts / advancedSearch.itemsPerPage);
 
     useEffect(() => {
-        if (user && user.topics.length) {
+        if (user && user.topics?.length) {
             const output = user.topics.map(e => e.id);
             setInterestedTopics(JSON.stringify(output));
         }

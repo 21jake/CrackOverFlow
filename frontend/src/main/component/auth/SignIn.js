@@ -147,13 +147,11 @@ export default function SignInSide() {
           </AvForm>
 
 
-          <Grid container>
             <Grid item>
               <Link to="/register" variant="body2">
                 {"Chưa có tài khoản? Đăng ký ngay"}
               </Link>
             </Grid>
-          </Grid>
           <Box mt={5}>
             <Copyright />
           </Box>

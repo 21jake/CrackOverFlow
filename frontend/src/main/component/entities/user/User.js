@@ -4,93 +4,42 @@ import PostPreview from '../post/PostPreview';
 import { useAuth } from '../../../../App'
 import { useHistory } from 'react-router-dom';
 import Pagination from '@material-ui/lab/Pagination';
-import Axios from '../../../api/Axios';
-import { ToastError } from '../shared/Toast'
 import moment from 'moment';
 import Comment from '../comment/Comment'
+import { fetchSuggestedPosts, fetchUserComments, fetchUserPosts } from '../../../actions/User';
+import { connect } from 'react-redux';
 
-const User = () => {
+const User = (props) => {
     const { user } = useAuth();
     const history = useHistory();
-    const [totalCredit, setTotalCredit] = useState(0);
+    const [paginationState, setPaginationState] = useState({
+        currentPage: 1,
+        itemsPerPage: 10
+    });
     const interestedTopics = user?.topics.length ? user.topics.map(e => e.id) : [1, 2];
-    const [suggestedPosts, setSuggestedPosts] = useState([]);
+    const { posts, comments, totalPosts, totalCredit, suggestedPosts} = props;
 
+    const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
     useEffect(() => {
         if (!user || !user.id) {
             history.push('/register');
         }
     }, [user])
 
-    const [totalPage, setTotalPage] = useState(1);
-    const [posts, setPosts] = useState([]);
-    const [comments, setComments] = useState([]);
-    const [paginationState, setPaginationState] = useState({
-        currentPage: 1,
-        itemsPerPage: 10
-    });
-
-    const getPosts = async () => {
-        try {
-            const res = await Axios.get(`/posts/user/${user?.id}?page=${paginationState.currentPage}`);
-            if (res.status === 200) {
-                setPosts(res.data.data.posts.data);
-                const total = Math.ceil(res.data.data.posts.total / paginationState.itemsPerPage);
-                setTotalPage(total);
-                setTotalCredit(parseInt(res.data.data.totalCredit));
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            // console.log(error);
-        }
-    }
-
-    const getComments = async () => {
-        try {
-            const res = await Axios.get(`/comments/user/${user?.id}`);
-            if (res.status === 200) {
-                if (res.data.data.data.length) {
-                    setComments(res.data.data.data);
-                } else {
-                    setComments([]);
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const getSuggestedPosts = async () => {
-        try {
-            const res = await Axios.get(`/posts/search?topics=${JSON.stringify(interestedTopics)}`);
-            if (res.status === 200) {
-                if (res.status === 200) {
-                    setSuggestedPosts(res.data.data.data);
-                } else {
-                    setSuggestedPosts([])
-                }    
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
         if (user) {
-            getComments();
-            getSuggestedPosts();
+            props.fetchUserComments(user?.id);
+            props.fetchSuggestedPosts(JSON.stringify(interestedTopics));
         }
     }, [user])
-
-    // (suggestedPost, 'suggestedPost')
 
     const handlePaginationChange = (event, value) => {
         setPaginationState({ ...paginationState, currentPage: value })
     }
 
     useEffect(() => {
-        getPosts();
+        window.scrollTo(0,0)
+        props.fetchUserPosts(user?.id, paginationState.currentPage);
     }, [JSON.stringify(paginationState)]);
 
     // (user, 'user')
@@ -177,7 +126,7 @@ const User = () => {
 
                         </Col>
                     </Row>
-                    <Row className={suggestedPosts.length ? "" : "d-none" }>
+                    <Row className={suggestedPosts.length ? "" : "d-none"}>
                         <Col xs="12" >
                             <span className="lead">
                                 Bài viết đề xuất
@@ -203,4 +152,19 @@ const User = () => {
         </Container>
     )
 }
-export default User;
+const mapStateToProps = state => {
+    return {
+        posts: state.user.posts,
+        comments: state.user.comments,
+        totalPosts: state.user.totalPosts,
+        totalCredit: state.user.totalCredit,
+        suggestedPosts: state.user.suggestedPosts
+    }
+}
+const mapDispatchToProps = {
+    fetchSuggestedPosts, 
+    fetchUserComments, 
+    fetchUserPosts
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);

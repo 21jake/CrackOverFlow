@@ -1,15 +1,37 @@
-import { REGISTER } from "../actions/types";
-const INITIAL_STATE = {
+import { FETCH_USER_COMMENTS, FETCH_USER_SUGGESTED_POSTS, FETCH_USER_POSTS, RESET_USER } from "../actions/types";
+const initialState = {
     isSignedIn: null,
-    userId: null
+    userId: null,
+    posts: [],
+    totalPosts: 0,
+    suggestedPosts: [],
+    comments: [],
+    totalCredit: 0
 }
 
-export default (state = INITIAL_STATE, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
-        case SIGN_IN:
-            return { ...state, isSignedIn: true, userId: action.payload };
-        case SIGN_OUT:
-            return { ...state, isSignedIn: false, userId: null }
+        case FETCH_USER_POSTS:
+            return {
+                ...state,
+                posts: action.payload.posts?.data,
+                totalCredit: action.payload.totalCredit,
+                totalPosts: action.payload.posts?.total,
+            }
+        case FETCH_USER_COMMENTS:
+            return {
+                ...state,
+                comments: action.payload.data
+            }
+        case FETCH_USER_SUGGESTED_POSTS:
+            return {
+                ...state,
+                suggestedPosts: action.payload.data
+            }
+        case RESET_USER:
+            return {
+                ...initialState
+            };
         default:
             return state;
     }

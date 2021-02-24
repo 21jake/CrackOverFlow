@@ -5,8 +5,11 @@ import Comment from './Comment';
 import { useAuth } from "../../../../App";
 import { createComment, fetchPostComments, triggerFetchOff, triggerFetchOn, resetComment } from "../../../actions/Comments";
 import { connect } from 'react-redux';
+import { ToastError } from '../shared/Toast';
+import { useHistory } from 'react-router-dom';
 
 const CommentWrapper = (props) => {
+    const history = useHistory();
     const { postId, comments, shouldSearchComments, commentUpdateSuccess } = props;
     const formRef = useRef();
     const { user } = useAuth();
@@ -34,12 +37,17 @@ const CommentWrapper = (props) => {
 
 
     const handleSubmitComment = (event, errors, value) => {
-        if (!errors.length) {
-            value.post_id = postId;
-            value.user_id = user.id;
-            value.parent_comment_id = null;
-            props.createComment(value);
-            props.triggerFetchOn();
+        if (!user) {
+            ToastError("Vui lòng đăng nhập trước khi bình luận");
+            history.push('/login');
+        } else {
+            if (!errors.length) {
+                value.post_id = postId;
+                value.user_id = user.id;
+                value.parent_comment_id = null;
+                props.createComment(value);
+                props.triggerFetchOn();
+            }
         }
     }
 

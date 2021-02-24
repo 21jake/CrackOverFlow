@@ -20,7 +20,7 @@ const CustomNavBar = () => {
     };
 
     const handleLogout = () => {
-        history.push('/register');
+        history.push('/');
         logout();
     }
 
