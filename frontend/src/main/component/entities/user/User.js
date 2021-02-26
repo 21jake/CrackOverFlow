@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import Pagination from '@material-ui/lab/Pagination';
 import moment from 'moment';
 import Comment from '../comment/Comment'
-import { fetchSuggestedPosts, fetchUserComments, fetchUserPosts } from '../../../actions/User';
+import { fetchSuggestedPosts, fetchUserComments, fetchUserPosts, resetUser } from '../../../actions/User';
 import { connect } from 'react-redux';
 
 const User = (props) => {
@@ -16,7 +16,7 @@ const User = (props) => {
         currentPage: 1,
         itemsPerPage: 10
     });
-    const interestedTopics = user?.topics.length ? user.topics.map(e => e.id) : [1, 2];
+    const interestedTopics = user?.topics?.length ? user.topics.map(e => e.id) : [1, 2];
     const { posts, comments, totalPosts, totalCredit, suggestedPosts} = props;
 
     const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
@@ -26,6 +26,9 @@ const User = (props) => {
         }
     }, [user])
 
+    useEffect(() => {
+        props.resetUser();
+    }, [])
     useEffect(() => {
         if (user) {
             props.fetchUserComments(user?.id);
@@ -42,7 +45,6 @@ const User = (props) => {
         props.fetchUserPosts(user?.id, paginationState.currentPage);
     }, [JSON.stringify(paginationState)]);
 
-    // (user, 'user')
     return (
         <Container className="themed-container p-5">
             <Row>
@@ -164,7 +166,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     fetchSuggestedPosts, 
     fetchUserComments, 
-    fetchUserPosts
+    fetchUserPosts,
+    resetUser
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

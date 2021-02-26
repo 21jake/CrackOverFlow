@@ -1,7 +1,8 @@
-import { FETCH_USER_COMMENTS, FETCH_USER_SUGGESTED_POSTS, FETCH_USER_POSTS, RESET_USER } from "../actions/types";
+import { FETCH_USER_COMMENTS, FETCH_USER_SUGGESTED_POSTS,
+     FETCH_USER_POSTS, RESET_USER, FETCH_GUEST } from "../actions/types";
 const initialState = {
     isSignedIn: null,
-    userId: null,
+    guest: null,
     posts: [],
     totalPosts: 0,
     suggestedPosts: [],
@@ -17,6 +18,11 @@ export default (state = initialState, action) => {
                 posts: action.payload.posts?.data,
                 totalCredit: action.payload.totalCredit,
                 totalPosts: action.payload.posts?.total,
+            }
+        case FETCH_GUEST:
+            return {
+                ...state,
+                guest: action.payload
             }
         case FETCH_USER_COMMENTS:
             return {

@@ -1,97 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Container } from 'reactstrap';
 import PostPreview from '../post/PostPreview';
-// import { useAuth } from '../../../../App'
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Pagination from '@material-ui/lab/Pagination';
-import Axios from '../../../api/Axios';
-import { ToastError } from '../shared/Toast'
 import moment from 'moment';
 import Comment from '../comment/Comment'
+import { fetchUserComments, fetchUserPosts, resetUser, fetchGuest } from '../../../actions/User';
+import { connect } from 'react-redux';
 
-const Guess = () => {
+
+const Guest = (props) => {
     const { id } = useParams();
-    const [user, setUser] = useState(null);
-    // const history = useHistory();
-    const [totalCredit, setTotalCredit] = useState(0)
-
-
-    const [totalPage, setTotalPage] = useState(1);
-    const [posts, setPosts] = useState([]);
-    const [comments, setComments] = useState([]);
+    // const [user, setUser] = useState(null);
     const [paginationState, setPaginationState] = useState({
         currentPage: 1,
         itemsPerPage: 10
     });
-
-    const getUser = async () => {
-        try {
-            const res = await Axios.get(`/users/detail/${id}`);
-            if (res.status === 200) {
-                (res, 'rees')
-                setUser(res.data.data)
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
- 
+    const { posts, comments, totalPosts, totalCredit, user } = props;
+    const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
 
 
-    const getPosts = async () => {
-        try {
-            const res = await Axios.get(`/posts/user/${user?.id}?page=${paginationState.currentPage}`);
-            if (res.status === 200) {
-                // (res.data.data.posts.total , 'res.res.data.data.total.data.posts)');
-                setPosts(res.data.data.posts.data);
-                const total = Math.ceil(res.data.data.posts.total / paginationState.itemsPerPage);
-                setTotalPage(total);
-                setTotalCredit(parseInt(res.data.data.totalCredit));
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
+  
 
-    const getComments = async () => {
-        try {
-            const res = await Axios.get(`/comments/user/${user?.id}`);
-            if (res.status === 200) {
-                // (res, 'res')
-                if (res.data.data.data.length) {
-                    setComments(res.data.data.data);
-                } else {
-                    setComments([]);
-                }
-
-            } else {
-                ToastError(res.data.message)
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
+    useEffect(() => {
+        props.resetUser();
+        props.fetchGuest(id);
+        props.fetchUserComments(id);
+    }, [])
+    useEffect(() => {
+        props.fetchUserPosts(id, paginationState.currentPage);
+    }, [JSON.stringify(paginationState)]);
 
 
     const handlePaginationChange = (event, value) => {
         setPaginationState({ ...paginationState, currentPage: value })
     }
-    useEffect(() => {
-        getUser();
-    }, [])
-    useEffect(() => {
-        getPosts();
-    }, [JSON.stringify(paginationState)]);
-    useEffect(() => {
-        if (user?.id) {
-            getComments();
-        }
-    }, [user?.id])
+
     return (
         <Container className="themed-container p-5">
             <Row>
@@ -180,4 +124,19 @@ const Guess = () => {
         </Container>
     )
 }
-export default Guess;
+const mapStateToProps = state => {
+    return {
+        posts: state.user.posts,
+        comments: state.user.comments,
+        totalPosts: state.user.totalPosts,
+        totalCredit: state.user.totalCredit,
+        user: state.user.guest
+    }
+}
+const mapDispatchToProps = {
+    fetchUserComments, 
+    fetchUserPosts, 
+    resetUser, 
+    fetchGuest
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Guest);

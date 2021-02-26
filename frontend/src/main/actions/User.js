@@ -1,11 +1,21 @@
 import Axios from '../api/Axios';
-import { REGISTER, FETCH_USER_COMMENTS, FETCH_USER_POSTS, FETCH_USER_SUGGESTED_POSTS, RESET_USER } from './types';
+import {
+    REGISTER, FETCH_USER_COMMENTS, FETCH_USER_POSTS, FETCH_GUEST,
+    FETCH_USER_SUGGESTED_POSTS, RESET_USER } from './types';
 
 export const createUser = values => async (dispatch) => {
     const res = await Axios.post('/auth/register', values);
     dispatch({
         type: REGISTER,
         payload: res.data.user
+    })
+}
+
+export const fetchGuest = (id) =>  async dispatch => {
+    const res = await Axios.get(`/users/detail/${id}`);
+    dispatch({
+        type: FETCH_GUEST,
+        payload: res.data.data
     })
 }
 
