@@ -238,14 +238,14 @@ const Home = (props) => {
                             </div>
                             <div className="home_hotPosts">
                                 {
-                                    topPosts?.length && topPosts.map(e => (
+                                    topPosts.length ? topPosts.map(e => (
                                         <PostPreview
                                             hideVote={true}
                                             key={e.id}
                                             post={e}
                                         // postId={e.id}
-                                        />
-                                    ))
+                                        /> 
+                                    )) : "asd"
                                 }
                             </div>
                         </Col>
@@ -259,7 +259,7 @@ const mapStateToProps = (state) => {
     return {
         posts: state.post.entities,
         totalPosts: state.post.totalItems,
-        topPosts: state.post.hotEntities,
+        topPosts: Object.values(state.post.hotEntities),
         shouldSearchPosts: state.post.shouldSearchEntities
     }
 }

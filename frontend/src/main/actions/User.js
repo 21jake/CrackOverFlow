@@ -1,6 +1,7 @@
 import Axios from '../api/Axios';
 import {
-    REGISTER, FETCH_USER_COMMENTS, FETCH_USER_POSTS, FETCH_GUEST,
+    REGISTER, FETCH_USER_COMMENTS, FETCH_USER_POSTS, FETCH_GUEST, 
+    TRIGER_FETCH_USER_ON, TRIGER_FETCH_USER_OFF,
     FETCH_USER_SUGGESTED_POSTS, RESET_USER } from './types';
 
 export const createUser = values => async (dispatch) => {
@@ -48,3 +49,10 @@ export const resetUser = () => ({
     type: RESET_USER
 });
 
+export const triggerSearchOff = () => ({
+    type: TRIGER_FETCH_USER_OFF
+});
+
+export const triggerSearchOn = () => ({
+    type: TRIGER_FETCH_USER_ON
+});

@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import moment from 'moment';
-import Axios from '../../../api/Axios';
-import { ToastError, ToastSuccess } from '../../entities/shared/Toast'
 import { useAuth } from "../../../../App";
 import PostDetail from '../post/PostDetail';
 import DeleteModal from '../shared/DeleteModal';
@@ -12,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { AvGroup, AvInput, AvFeedback, AvForm } from 'availity-reactstrap-validation';
 import { deleteComment, editComment, triggerFetchOn, resetComment } from "../../../actions/Comments";
+import { triggerSearchOn as triggerSearchUserOn } from "../../../actions/User";
 import { fetchPost } from "../../../actions/Posts";
 import { connect } from 'react-redux';
 
@@ -27,6 +26,7 @@ const Comment = (props) => {
     const editForm = useRef();
     const [userIntent, setUserIntent] = useState(undefined)
 
+    const userIsCommentCreator = entity?.user.id === user?.id;
 
     const [postDetailModal, setPostDetailModal] = useState(false);
     const toggleDetailModal = () => setPostDetailModal(!postDetailModal);
@@ -49,10 +49,11 @@ const Comment = (props) => {
         setUserIntent("DELETE_COMMENT");
     }
     const handleRedirect = inputId => {
-        if (inputId === user.id) {
+        if (userIsCommentCreator) {
             history.push('/current');
         } else {
             history.push(`/user/${inputId}`);
+            props.triggerSearchUserOn()
         }
     }
     const toggleActionDropdown = () => setActionDropdown(prevState => !prevState);
@@ -110,7 +111,8 @@ const Comment = (props) => {
             <Col xs="11">
                 <Row className="justify-content-between">
                     <Col xs="10">
-                        <p className="font-weight-bold m-0" onClick={() => handleRedirect(entity?.user.id)} >
+                        <p className={`font-weight-bold m-0 cursor-pointer-text ${userIsCommentCreator && "text-primary"}`}
+                         onClick={() => handleRedirect(entity?.user.id)} >
                             {`${entity?.user.fname} ${entity?.user.lname}`}
                         </p>
                     </Col>
@@ -192,7 +194,8 @@ const mapDispatchToProps = {
     editComment,
     fetchPost,
     triggerFetchOn,
-    resetComment
+    resetComment,
+    triggerSearchUserOn
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comment);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Col, Row, Container } from 'reactstrap';
 import PostPreview from '../post/PostPreview';
 import { useParams } from 'react-router-dom';
@@ -18,17 +18,25 @@ const Guest = (props) => {
     });
     const { posts, comments, totalPosts, totalCredit, user } = props;
     const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
+    let initialRender = useRef(true);
 
-
-  
-
-    useEffect(() => {
+    const getEntities = () => {
         props.resetUser();
         props.fetchGuest(id);
         props.fetchUserComments(id);
-    }, [])
+    }
+
     useEffect(() => {
+        getEntities();
         props.fetchUserPosts(id, paginationState.currentPage);
+    }, [id])
+
+    useEffect(() => {
+        if (initialRender) {
+            initialRender = false;
+        } else {
+            props.fetchUserPosts(id, paginationState.currentPage);
+        }
     }, [JSON.stringify(paginationState)]);
 
 
@@ -130,13 +138,12 @@ const mapStateToProps = state => {
         comments: state.user.comments,
         totalPosts: state.user.totalPosts,
         totalCredit: state.user.totalCredit,
-        user: state.user.guest
-    }
+        user: state.user.guest    }
 }
 const mapDispatchToProps = {
-    fetchUserComments, 
-    fetchUserPosts, 
-    resetUser, 
+    fetchUserComments,
+    fetchUserPosts,
+    resetUser,
     fetchGuest
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Guest);

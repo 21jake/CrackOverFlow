@@ -1,5 +1,7 @@
-import { FETCH_USER_COMMENTS, FETCH_USER_SUGGESTED_POSTS,
-     FETCH_USER_POSTS, RESET_USER, FETCH_GUEST } from "../actions/types";
+import {
+    FETCH_USER_COMMENTS, FETCH_USER_SUGGESTED_POSTS, TRIGER_FETCH_USER_OFF, TRIGER_FETCH_USER_ON,
+    FETCH_USER_POSTS, RESET_USER, FETCH_GUEST
+} from "../actions/types";
 const initialState = {
     isSignedIn: null,
     guest: null,
@@ -7,7 +9,8 @@ const initialState = {
     totalPosts: 0,
     suggestedPosts: [],
     comments: [],
-    totalCredit: 0
+    totalCredit: 0,
+    shouldSearchEntities: false
 }
 
 export default (state = initialState, action) => {
@@ -33,6 +36,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 suggestedPosts: action.payload.data
+            }
+        case TRIGER_FETCH_USER_ON:
+            return {
+                ...state,
+                shouldSearchEntities: true
+            }
+        case TRIGER_FETCH_USER_OFF:
+            return {
+                ...state,
+                shouldSearchEntities: false
             }
         case RESET_USER:
             return {

@@ -21,7 +21,7 @@ class PostController extends Controller
     }
     public function getPost($postId)
     {
-        $post = Post::where('id', $postId)->with('comments', 'topic')->first();
+        $post = Post::where('id', $postId)->with('comments', 'topic', 'user')->first();
         if ($post) {
             return GetdataOutput(1, 200, 'Tìm thấy bài đăng', $post);
         } else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Vote from '../vote/Vote'
 import { Col, Row, Badge } from 'reactstrap';
 import PostDetail from './PostDetail';
@@ -6,17 +6,17 @@ import { returnValueOrEmpty } from '../shared/returnValueOrEmpty';
 import moment from 'moment';
 import { sample } from "lodash";
 import { connect } from 'react-redux';
-import { fetchPost } from '../../../actions/Posts';
+import { fetchPost, triggerSearchOff } from '../../../actions/Posts';
 // import { useEffect, useState, useRef } from 'react';
 
 const PostPreview = (props) => {
-    const { post, hideVote, entity } = props
+    const { post, hideVote, entity, shouldSearchUserEntities } = props
 
     const getPostById = () => {
         props.fetchPost(post.id);
 
     }
-
+    
     const [postDetailModal, setPostDetailModal] = useState(false);
     const toggleDetailModal = () => setPostDetailModal(!postDetailModal);
     const detailModalVisible = () => {
@@ -24,6 +24,13 @@ const PostPreview = (props) => {
         setPostDetailModal(!postDetailModal);
     };
     const badgeColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'light']
+
+    useEffect(() => {
+        if (shouldSearchUserEntities) {
+            setPostDetailModal(false);
+            props.triggerSearchOff();
+        }
+    }, [shouldSearchUserEntities])
 
     // (post, 'post')
 
@@ -64,11 +71,13 @@ const PostPreview = (props) => {
 
 const mapStateToProps = state => {
     return {
-        entity: state.post.entity
+        entity: state.post.entity,
+        shouldSearchUserEntities: state.user.shouldSearchEntities
     }
 }
 const mapDispatchToProps = {
-    fetchPost
+    fetchPost,
+    triggerSearchOff
 }
 
 

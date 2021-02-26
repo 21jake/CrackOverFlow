@@ -47,3 +47,6 @@ code {
 .editIcon:hover {
   color:rgb(255, 215, 85);
 }
+.cursor-pointer-text {
+  cursor: pointer;
+}

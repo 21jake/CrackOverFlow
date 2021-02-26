@@ -14,10 +14,11 @@ import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastError } from '../shared/Toast'
 import { deletePost, triggerSearchOn, editPost } from "../../../actions/Posts";
 import { triggerFetchOn as triggerFetchCommentsOn } from "../../../actions/Comments";
-
+import {useHistory} from 'react-router-dom';
 import { connect } from "react-redux";
 
 const PostDetail = (props) => {
+    const history = useHistory();
     const editForm = useRef();
     const { post, postUpdateSuccess } = props;
     const [comments, setComments] = useState([]);
@@ -36,7 +37,6 @@ const PostDetail = (props) => {
         setDeleteModal(!deleteModal);
     };
     const toggleActionDropdown = () => setActionDropdown(prevState => !prevState);
-
 
     useEffect(() => {
         if (post?.topic) {
@@ -104,6 +104,14 @@ const PostDetail = (props) => {
         }
     }, [postUpdateSuccess])
 
+    const handleRedirect = inputId => {
+        if (inputId === user.id) {
+            history.push('/current');
+        } else {
+            history.push(`/user/${inputId}`);
+        }
+    }
+
     return (
         <Modal className="m-3" isOpen={props.modal} toggle={() => props.toggle()} className="postDetailModal">
             <DeleteModal
@@ -129,7 +137,6 @@ const PostDetail = (props) => {
                 <Row className="m-3">
                     <Col xs="12">
                         <AvForm
-                            // model={defaultPost}
                             onSubmit={handleEditPost}
                             ref={editForm}
                         >
@@ -181,6 +188,9 @@ const PostDetail = (props) => {
                                 <p className="font-weight-bold">
                                     {post?.title}
                                 </p>
+                                <p className="text-muted font-italic cursor-pointer-text" onClick={() => handleRedirect(post?.user.id)}>
+                                    {`${post?.user.fname} ${post?.user.lname}`}
+                                </p>
                             </Col>
                             <Col xs="1" className="text-center">
                                 <Dropdown isOpen={actionDropdown}
@@ -223,7 +233,7 @@ const PostDetail = (props) => {
 }
 const mapStateToProps = state => {
     return {
-        postUpdateSuccess: state.post.updateSuccess
+        postUpdateSuccess: state.post.updateSuccess,
     }
 }
 const mapDispatchToProps = {
