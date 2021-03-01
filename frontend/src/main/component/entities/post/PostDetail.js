@@ -16,6 +16,8 @@ import { deletePost, triggerSearchOn, editPost } from "../../../actions/Posts";
 import { triggerFetchOn as triggerFetchCommentsOn } from "../../../actions/Comments";
 import {useHistory} from 'react-router-dom';
 import { connect } from "react-redux";
+import Avatar from '@material-ui/core/Avatar';
+import { mapAvatar } from '../shared/Avatar'
 
 const PostDetail = (props) => {
     const history = useHistory();
@@ -184,13 +186,18 @@ const PostDetail = (props) => {
                     </Col>
                     <Col xs="11" className="mt-5">
                         <Row className="d-flex justify-content-between">
-                            <Col xs="11">
+                            <Col xs="11" className="mb-3">
                                 <p className="font-weight-bold">
                                     {post?.title}
                                 </p>
-                                <p className="text-muted font-italic cursor-pointer-text" onClick={() => handleRedirect(post?.user.id)}>
-                                    {`${post?.user.fname} ${post?.user.lname}`}
-                                </p>
+                               {/* <div className="d-flex"> */}
+                                    {/* <Avatar src={mapAvatar[post?.user.avatar]} /> */}
+
+                                    <p className="text-muted font-italic cursor-pointer-text"  onClick={() => handleRedirect(post?.user.id)}>
+                                        {`${post?.user.fname} ${post?.user.lname}`}
+                                    </p>
+                               {/* </div> */}
+                         
                             </Col>
                             <Col xs="1" className="text-center">
                                 <Dropdown isOpen={actionDropdown}

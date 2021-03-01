@@ -1,7 +1,7 @@
 import Select from 'react-select';
-import { Row, Label } from 'reactstrap';
+import { Label } from 'reactstrap';
 import Axios from '../../../api/Axios'
-import { useStyles, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 const TopicsDropdown = (props) => {

@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-// import TextField from '@material-ui/core/TextField';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -16,7 +14,8 @@ import { ToastError, ToastSuccess } from '../entities/shared/Toast';
 import { useAuth } from '../../../App'
 import { useHistory } from 'react-router-dom';
 import TopicsDropdown from '../entities/shared/TopicsDropdown';
-
+import { Label } from 'reactstrap';
+import { avatars, mapAvatar } from '../entities/shared/Avatar'
 
 
 function Copyright() {
@@ -57,7 +56,7 @@ export default function SignUp() {
   const classes = useStyles();
   const history = useHistory();
   const [topics, setTopics] = useState([]);
-
+  const [chosenAvatar, setChosenAvatar] = useState(null)
 
   useEffect(() => {
     if (user && user.id) {
@@ -68,14 +67,11 @@ export default function SignUp() {
 
   const saveEntity = async (formData) => {
     try {
-      // setLoading(true);
       const res = await Axios.post('/auth/register', formData);
-      // (res,' res');
       if (res && res.data.success) {
         ToastSuccess(res.data.message);
         login(res.data.user, res.data.token.token);
         return history.push('/')
-        // return <Redirect to='/' />
       } else {
         ToastError(res.data.message);
       }
@@ -87,9 +83,13 @@ export default function SignUp() {
 
 
   const register = (event, errors, value) => {
-
+    if (!chosenAvatar) {
+      ToastError("Vui lòng chọn ảnh đại diện");
+      return
+    }
     if (!errors.length) {
       value.topics = topics;
+      value.avatar = chosenAvatar;
       saveEntity(value);
     }
   }
@@ -103,13 +103,23 @@ export default function SignUp() {
     }
   }
 
+  const returnAvatars = () => {
+    const JSXData = avatars.map(e => (
+      <Avatar
+        key={e.value}
+        src={e.value}
+        onClick={() => setChosenAvatar(e.index)}
+        className={chosenAvatar === e.index ? 'chosen-avatar' : 'border' }
+      />
+    ))
+      return JSXData
+  }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">
           Đăng ký
@@ -184,6 +194,16 @@ export default function SignUp() {
                   required: { value: true, errorMessage: 'Vui lòng nhập mật khẩu' },
                 }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Label>
+                <span>Chọn ảnh đại diện</span>
+              </Label>
+              <div className="d-flex justify-content-center">
+                {returnAvatars()}
+              </div>
+
+
             </Grid>
             <Button
               type="submit"

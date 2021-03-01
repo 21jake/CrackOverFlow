@@ -5,7 +5,6 @@ import { useAuth } from "../../../../App";
 import PostDetail from '../post/PostDetail';
 import DeleteModal from '../shared/DeleteModal';
 import { useHistory } from 'react-router-dom';
-import RandomAvatar from "./../shared/RandomAvatar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { AvGroup, AvInput, AvFeedback, AvForm } from 'availity-reactstrap-validation';
@@ -13,6 +12,9 @@ import { deleteComment, editComment, triggerFetchOn, resetComment } from "../../
 import { triggerSearchOn as triggerSearchUserOn } from "../../../actions/User";
 import { fetchPost } from "../../../actions/Posts";
 import { connect } from 'react-redux';
+import Avatar from '@material-ui/core/Avatar';
+import {mapAvatar} from '../shared/Avatar'
+
 
 
 const Comment = (props) => {
@@ -105,7 +107,7 @@ const Comment = (props) => {
             />
             <Col xs="1" >
                 <div >
-                    <RandomAvatar letter={entity?.user.fname[0]} />
+                    <Avatar src={mapAvatar[entity?.user.avatar]} />
                 </div>
             </Col>
             <Col xs="11">
