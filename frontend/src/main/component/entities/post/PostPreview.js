@@ -36,8 +36,8 @@ const PostPreview = (props) => {
 
     return (
         <Col xs="12" className="p-3">
-            <Row>
-                <Col xs="2" className=" m-auto">
+            <Row className="justify-content-between">
+                <Col xs="2" >
                     <Vote
                         hideVote={hideVote}
                         totalVote={post?.post_votes}

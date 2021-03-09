@@ -51,7 +51,7 @@ const Guest = (props) => {
                 <Col xs="8">
                     <Row>
                         <Col xs="12" >
-                            <span className="lead">
+                            <span className="title-text">
                                 Thông tin người dùng
                             </span>
                         </Col>
@@ -73,21 +73,21 @@ const Guest = (props) => {
                 <Col xs="4">
                     <div className="text-center border border-secondary rounded h-100 d-flex">
                         <h2 className="m-auto text-primary">
-                            CREDIT: {totalCredit}
+                            CREDIT: {totalCredit ? totalCredit : 0}
                         </h2>
                     </div>
                 </Col>
             </Row>
             <Row className="mt-5">
-                <Col xs="7">
+                <Col xs="12">
                     <Row>
-                        <Col xs="12" >
-                            <span className="lead">
+                        <Col xs="10" >
+                            <span className="title-text">
                                 Các bài đăng gần đây
                         </span>
                         </Col>
-                        <Col xs="12" className="m-3">
-                            <div className="border border-secondary rounded m-3">
+                        <Col xs="10" className="border border-secondary rounded  p-3 mt-3">
+                            <div>
                                 {
                                     posts?.length ? posts.map(e => (
                                         <PostPreview
@@ -98,23 +98,25 @@ const Guest = (props) => {
                                     )) : <p className="text-center m-3"> Không có bài đăng nào </p>
                                 }
                             </div>
+                            <div className={posts?.length ? "justify-content-center d-flex" : "d-none"}>
+                                <Pagination count={totalPage} variant="outlined"
+                                    onChange={handlePaginationChange}
+                                    shape="rounded" />
+                            </div>
                         </Col>
+              
                     </Row>
-                    <Row className={posts?.length ? "justify-content-center" : "d-none"}>
-                        <Pagination count={totalPage} variant="outlined"
-                            onChange={handlePaginationChange}
-                            shape="rounded" />
-                    </Row>
+
                 </Col>
-                <Col xs="5">
+                <Col xs="12" className="mt-3">
                     <Row>
-                        <Col xs="12" >
-                            <span className="lead">
+                        <Col xs="10" >
+                            <span className="title-text">
                                 Các bình luận gần đây
                         </span>
                         </Col>
-                        <Col xs="12" className="m-3">
-                            <div className="border border-secondary rounded m-3">
+                        <Col xs="10"  className="mt-3">
+                            <div className="border border-secondary rounded p-3">
                                 {comments?.length ?
                                     comments.map(e =>
                                         <Comment
@@ -139,7 +141,8 @@ const mapStateToProps = state => {
         comments: state.user.comments,
         totalPosts: state.user.totalPosts,
         totalCredit: state.user.totalCredit,
-        user: state.user.guest    }
+        user: state.user.guest
+    }
 }
 const mapDispatchToProps = {
     fetchUserComments,

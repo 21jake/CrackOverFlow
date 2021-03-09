@@ -8,9 +8,10 @@ import useDebounce from './entities/shared/useDebounce';
 import Pagination from '@material-ui/lab/Pagination';
 import TopicsDropdown from '../component/entities/shared/TopicsDropdown'
 import { useAuth } from '../../App'
-import { pickBy, omit } from 'lodash';
+import { pickBy } from 'lodash';
 import { fetchPosts, fetchHotPosts, triggerSearchOff } from "../actions/Posts";
 import { connect } from "react-redux";
+import HeaderImage from "../../assets/images/header/header_image.png"
 
 const Home = (props) => {
     const { posts, totalPosts, topPosts, shouldSearchPosts } = props;

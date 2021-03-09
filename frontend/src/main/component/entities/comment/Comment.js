@@ -94,9 +94,12 @@ const Comment = (props) => {
         }
     }, [commentUpdateSuccess])
 
+    const handleDropdownClick = e => {
+        e.stopPropagation();
+    }
 
     return (
-        <Row className="mt-3"
+        <Row className="mt-3 justify-content-between w-100"
             onClick={() => clickDisplayPost && detailModalVisible()}
         >
             <DeleteModal
@@ -106,12 +109,10 @@ const Comment = (props) => {
                 handleComfirm={handleDeleteComment}
             />
             <Col xs="1" >
-                <div >
-                    <Avatar src={mapAvatar[entity?.user.avatar]} />
-                </div>
+                 <Avatar src={mapAvatar[entity?.user.avatar]} />
             </Col>
             <Col xs="11">
-                <Row className="justify-content-between">
+                <Row className="justify-content-between ">
                     <Col xs="10">
                         <p className={`font-weight-bold m-0 cursor-pointer-text ${userIsCommentCreator && "text-primary"}`}
                          onClick={() => handleRedirect(entity?.user.id)} >
@@ -120,6 +121,7 @@ const Comment = (props) => {
                     </Col>
                     <Col xs="2">
                         <Dropdown isOpen={actionDropdown}
+                            onClick={handleDropdownClick}
                             className={entity?.user_id === user?.id ? "d-flex" : "d-none"}
                             toggle={toggleActionDropdown}>
                             <DropdownToggle className="DropdownToggle" color="light">

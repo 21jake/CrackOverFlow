@@ -11,7 +11,6 @@ import { searchPosts, searchUsers } from '../actions/Search';
 
 const Search = (props) => {
     const { query } = useParams();
-    let initialRender = useRef(true);
 
     const [tabStatus, setTabStatus] = useState('POSTS');
     const [advancedSearch, setAdvancedSearch] = useState({
@@ -35,15 +34,7 @@ const Search = (props) => {
 
     useEffect(() => {
         getEntities();
-    }, [tabStatus, query]);
-
-    useEffect(() => {
-        if (initialRender) {
-            initialRender = false;
-        } else { 
-            getEntities();
-        }
-    }, [JSON.stringify(advancedSearch)])
+    }, [JSON.stringify(advancedSearch), tabStatus, query])
 
     const handleTabChange = (event, newValue) => {
         setTabStatus(newValue);
@@ -92,6 +83,7 @@ const Search = (props) => {
 
 
     const handlePaginationChange = (event, value) => {
+        window.scrollTo(0,0)
         setAdvancedSearch({ ...advancedSearch, page: value })
     }
 

@@ -17,7 +17,7 @@ const User = (props) => {
         itemsPerPage: 10
     });
     const interestedTopics = user?.topics?.length ? user.topics.map(e => e.id) : [1, 2];
-    const { posts, comments, totalPosts, totalCredit, suggestedPosts} = props;
+    const { posts, comments, totalPosts, totalCredit, suggestedPosts } = props;
 
     const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
     useEffect(() => {
@@ -41,7 +41,7 @@ const User = (props) => {
     }
 
     useEffect(() => {
-        window.scrollTo(0,0)
+        window.scrollTo(0, 0)
         props.fetchUserPosts(user?.id, paginationState.currentPage);
     }, [JSON.stringify(paginationState)]);
 
@@ -51,7 +51,7 @@ const User = (props) => {
                 <Col xs="8">
                     <Row>
                         <Col xs="12" >
-                            <span className="lead">
+                            <span className="title-text">
                                 Thông tin người dùng
                             </span>
                         </Col>
@@ -73,21 +73,21 @@ const User = (props) => {
                 <Col xs="4">
                     <div className="text-center border border-secondary rounded h-100 d-flex">
                         <h2 className="m-auto text-primary">
-                            CREDIT: {totalCredit}
+                            CREDIT: {totalCredit ? totalCredit : 0}
                         </h2>
                     </div>
                 </Col>
             </Row>
             <Row className="mt-5">
-                <Col xs="7">
-                    <Row>
+                <Col xs="6">
+                    <Row >
                         <Col xs="12" >
-                            <span className="lead">
+                            <span className="title-text">
                                 Các bài đăng gần đây
                         </span>
                         </Col>
-                        <Col xs="12" className="m-3">
-                            <div className="border border-secondary rounded m-3">
+                        <Col xs="12" className="border border-secondary rounded mt-3 p-3">
+                            <Col xs="12">
                                 {
                                     posts?.length ? posts.map(e => (
                                         <PostPreview
@@ -97,24 +97,23 @@ const User = (props) => {
                                         />
                                     )) : <p className="text-center m-3"> Không có bài đăng nào </p>
                                 }
-                            </div>
+                            </Col>
+                            <Col xs="12" className={posts?.length ? "justify-content-center d-flex" : "d-none"}>
+                                <Pagination count={totalPage} variant="outlined"
+                                    onChange={handlePaginationChange}
+                                    shape="rounded" />
+                            </Col>
+
                         </Col>
                     </Row>
-                    <Row className={posts?.length ? "justify-content-center" : "d-none"}>
-                        <Pagination count={totalPage} variant="outlined"
-                            onChange={handlePaginationChange}
-                            shape="rounded" />
-                    </Row>
-                </Col>
-                <Col xs="5">
                     <Row>
-                        <Col xs="12" >
-                            <span className="lead">
+                        <Col xs="12" className="mt-5" >
+                            <span className="title-text">
                                 Các bình luận gần đây
                         </span>
                         </Col>
-                        <Col xs="11" className="ml-auto">
-                            <Row className="border border-secondary rounded ">
+                        <Col xs="12">
+                            <Row className="border border-secondary rounded p-3 mt-3">
                                 {comments?.length ?
                                     comments.map(e =>
                                         <Comment
@@ -125,12 +124,14 @@ const User = (props) => {
                                     : <p className="text-center m-3"> Không có bình luận nào </p>
                                 }
                             </Row>
-
                         </Col>
                     </Row>
+
+                </Col>
+                <Col xs="6">
                     <Row className={suggestedPosts.length ? "" : "d-none"}>
                         <Col xs="12" >
-                            <span className="lead">
+                            <span className="title-text">
                                 Bài viết đề xuất
                         </span>
                         </Col>
@@ -164,8 +165,8 @@ const mapStateToProps = state => {
     }
 }
 const mapDispatchToProps = {
-    fetchSuggestedPosts, 
-    fetchUserComments, 
+    fetchSuggestedPosts,
+    fetchUserComments,
     fetchUserPosts,
     resetUser
 }

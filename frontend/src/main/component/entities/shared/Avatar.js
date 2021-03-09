@@ -1,11 +1,11 @@
-import Batman from '../../../../assets/images/batman.png';
-import Bear from '../../../../assets/images/bear.png';
-import Cacti from '../../../../assets/images/cacti.png';
-import Jason from '../../../../assets/images/jason.png';
-import Lamb from '../../../../assets/images/lamb.png';
-import Man from '../../../../assets/images/man.png';
-import Walt from '../../../../assets/images/walt.png';
-import Women from '../../../../assets/images/women.png';
+import Batman from '../../../../assets/images/avatar/batman.png';
+import Bear from '../../../../assets/images/avatar/bear.png';
+import Cacti from '../../../../assets/images/avatar/cacti.png';
+import Jason from '../../../../assets/images/avatar/jason.png';
+import Lamb from '../../../../assets/images/avatar/lamb.png';
+import Man from '../../../../assets/images/avatar/man.png';
+import Walt from '../../../../assets/images/avatar/walt.png';
+import Women from '../../../../assets/images/avatar/women.png';
 
 export const avatars = [
     {
