@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 const Guest = (props) => {
     const { id } = useParams();
     // const [user, setUser] = useState(null);
+    console.log(id, 'iddididididid')
     const [paginationState, setPaginationState] = useState({
         currentPage: 1,
         itemsPerPage: 10

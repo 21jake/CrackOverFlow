@@ -83,7 +83,7 @@ class PostController extends Controller
         if ($data->isNotEmpty()) {
             return GetdataOutput(1, 200, 'Kết quả tìm kiếm', $data);
         } else {
-            return GetdataOutput(1, 201, 'Không tìm thấy bài đăng phù hợp', '');
+            return GetdataOutput(1, 201, 'Không tìm thấy bài đăng phù hợp', $data);
         }
 
     }

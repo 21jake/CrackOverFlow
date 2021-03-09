@@ -1,66 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Row, Container, Label, Button, Input } from 'reactstrap';
+import React, { useEffect, useState, useRef } from 'react';
+import { Col, Row, Container } from 'reactstrap';
 import PostPreview from '../component/entities/post/PostPreview'
 import UserPreview from "../component/entities/user/UserPreview";
 import { Tab, Tabs, Typography, withStyles } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
-import Axios from '../api/Axios';
 import { useParams } from 'react-router-dom';
 import { pickBy } from "lodash";
+import { connect } from 'react-redux';
+import { searchPosts, searchUsers } from '../actions/Search';
 
-const Search = () => {
+const Search = (props) => {
     const { query } = useParams();
+    let initialRender = useRef(true);
 
     const [tabStatus, setTabStatus] = useState('POSTS');
-    const [totalPage, setTotalPage] = useState(1);
-    const [posts, setPosts] = useState([]);
-    const [users, setUsers] = useState([]);
-
-
     const [advancedSearch, setAdvancedSearch] = useState({
         page: 1,
         itemsPerPage: 10,
         query: ''
     })
 
-
-    // (user, 'user');
-
-
+    const { users, posts, totalItems } = props;
+    const totalPage = Math.ceil(totalItems / advancedSearch.itemsPerPage);
 
     const getEntities = async () => {
-        try {
-            advancedSearch.query = query;
-            const params = pickBy(advancedSearch);
-            const res = await Axios.get(`/${tabStatus.toLowerCase()}/search`, { params });
-            (res, 'res');
-
-            if (res.status === 200) {
-                if (tabStatus === 'POSTS') {
-                    setPosts(res.data.data.data);
-                } else if (tabStatus === 'USERS') {
-                    setUsers(res.data.data.data);
-                }
-                const total = Math.ceil(res.data.data.total / advancedSearch.itemsPerPage);
-                setTotalPage(total);
-            } else {
-                if (tabStatus === 'POSTS') {
-                    setPosts([]);
-                } else if (tabStatus === 'USERS') {
-                    setUsers([]);
-                }
-            }
-        } catch (error) {
-            console.log(error);
+        advancedSearch.query = query;
+        const params = pickBy(advancedSearch);
+        if (tabStatus === 'POSTS') {
+            props.searchPosts(params)
+        } else if (tabStatus === 'USERS') {
+            props.searchUsers(params)
         }
     }
 
-
     useEffect(() => {
         getEntities();
-    }, [query, tabStatus, JSON.stringify(advancedSearch)]);
+    }, [tabStatus, query]);
 
-
+    useEffect(() => {
+        if (initialRender) {
+            initialRender = false;
+        } else { 
+            getEntities();
+        }
+    }, [JSON.stringify(advancedSearch)])
 
     const handleTabChange = (event, newValue) => {
         setTabStatus(newValue);
@@ -106,7 +89,6 @@ const Search = () => {
         },
         selected: {}
     }))((property) => <Tab disableRipple {...property} />);
-
 
 
     const handlePaginationChange = (event, value) => {
@@ -168,5 +150,18 @@ const Search = () => {
         </Container>
     )
 }
+const mapDispatchToProps = {
+    searchPosts,
+    searchUsers
+}
+const mapStateToProps = (state) => {
+    return {
+        users: state.search.usersEntities,
+        posts: state.search.postsEntities,
+        totalItems: state.search.totalItems
+    }
+}
 
-export default Search;
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
