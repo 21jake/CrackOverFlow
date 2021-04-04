@@ -51,8 +51,8 @@ function App() {
     setUser(user);
   }
 
-  const logout = () => {
-    Axios.get('/auth/logout');
+  const logout = async () => {
+    const result = await Axios.get('/auth/logout');
     localStorage.removeItem('crackToken');
     setUser(null);
   }

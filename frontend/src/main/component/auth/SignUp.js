@@ -156,6 +156,7 @@ export default function SignUp() {
               <TopicsDropdown 
               onTopicsChange={onTopicsChange}
               isMultiple={true}
+              // defaultValue={topic}
               />
             </Grid>
             <Grid item xs={12}>

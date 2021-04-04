@@ -57,7 +57,7 @@ const TopicsDropdown = (props) => {
 
     const returnDefaultOption = () => {
         if (!props.defaultOption) {
-            return null;
+            return undefined;
         }
         if (typeof props.defaultOption === "number") {
             return topics.find(e => e.value === props.defaultOption)
@@ -68,7 +68,7 @@ const TopicsDropdown = (props) => {
         
     }
 
-
+    // console.log(props.defaultOption, 'props.defaultOption');
     return (
         <>
             <Label>

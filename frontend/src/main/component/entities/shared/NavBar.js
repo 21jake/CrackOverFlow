@@ -19,9 +19,9 @@ const CustomNavBar = () => {
         setPostCreateModal(!postCreateModal);
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         history.push('/');
-        logout();
+        await logout();
     }
 
     const handleSubmit = (e) => {
@@ -85,7 +85,9 @@ const CustomNavBar = () => {
                 <Form inline onSubmit={handleSubmit}>
 
                     <FormControl type="text" placeholder="Tìm kiếm" className="mr-sm-2" name="query" value={query} onChange={e => setQuery(e.target.value)} />
-                    <Button variant="outline-info" type="submit">Tìm kiếm</Button>
+                    <Button variant="outline-info"
+                     disabled={!query.length}
+                    type="submit">Tìm kiếm</Button>
                 </Form>
             </Navbar.Collapse>
         </Navbar>

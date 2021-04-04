@@ -36,6 +36,7 @@ const PostCreate = (props) => {
 
     const onTopicsChange = (e) => {
         if (e) {
+            console.log(e, 'e');
             setTopic(e.value);
         } else {
             setTopic(undefined);
@@ -75,6 +76,7 @@ const PostCreate = (props) => {
                         <TopicsDropdown
                             onTopicsChange={onTopicsChange}
                             isMultiple={false}
+                            defaultOption={topic}
                         />
                     </Col>
                 </Row>
