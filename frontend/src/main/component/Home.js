@@ -11,7 +11,6 @@ import { useAuth } from '../../App'
 import { pickBy } from 'lodash';
 import { fetchPosts, fetchHotPosts, triggerSearchOff } from "../actions/Posts";
 import { connect } from "react-redux";
-import HeaderImage from "../../assets/images/header/header_image.png"
 
 const Home = (props) => {
     const { posts, totalPosts, topPosts, shouldSearchPosts } = props;
@@ -23,9 +22,9 @@ const Home = (props) => {
     const [interestedTopics, setInterestedTopics] = useState(undefined);
     const [advancedSearch, setAdvancedSearch] = useState({
         query: '',
-        topic: undefined,
-        minDate: undefined,
-        maxDate: undefined,
+        topic: null,
+        minDate: "",
+        maxDate: "",
         page: 1,
         itemsPerPage: 10
     })
@@ -70,12 +69,14 @@ const Home = (props) => {
         }
     }, [shouldSearchPosts])
 
+
     useEffect(() => {
         getHotPosts();
     }, [])
 
     const handleTabChange = (event, newValue) => {
         setTabStatus(newValue);
+        setAdvancedSearch({ ...advancedSearch, page: 1 })
     };
 
     const AntTabs = withStyles({
@@ -124,7 +125,7 @@ const Home = (props) => {
         if (e) {
             setAdvancedSearch({ ...advancedSearch, topic: e.value, page: 1 })
         } else {
-            setAdvancedSearch({ ...advancedSearch, topic: undefined, page: 1 })
+            setAdvancedSearch({ ...advancedSearch, topic: null, page: 1 })
         }
     }
     const handlePaginationChange = (event, value) => {
@@ -134,16 +135,36 @@ const Home = (props) => {
         setQuery(value);
         setAdvancedSearch({ ...advancedSearch, page: 1 })
     }
+    const onResetFilterClick = () => {
+        setAdvancedSearch({
+            ...advancedSearch,
+            page: 1,
+            query: '',
+            topic: null,
+            minDate: "",
+            maxDate: ""
+        })
+        setQuery('')
+    }
+
 
     return (
         <Container fluid className="mt-3">
             <Row>
+                <Col xs="12" className="d-flex">
+                    <Button color="light" size="sm" 
+                    onClick={onResetFilterClick}
+                    className="ml-auto border border-secondary"> 
+                        <span className="font-weight-bold">Reset</span>
+                    </Button>
+                </Col>
                 <Col xs="12">
                     <Row className="home_filterSection justify-content-center">
                         <Col>
                             <TopicsDropdown
                                 onTopicsChange={onTopicChange}
                                 isMultiple={false}
+                                defaultOption={advancedSearch.topic}
                             />
                         </Col>
                         <Col>
@@ -246,7 +267,7 @@ const Home = (props) => {
                                             post={e}
                                         // postId={e.id}
                                         /> 
-                                    )) : "asd"
+                                    )) : ""
                                 }
                             </div>
                         </Col>

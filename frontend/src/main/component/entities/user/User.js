@@ -6,7 +6,10 @@ import { useHistory } from 'react-router-dom';
 import Pagination from '@material-ui/lab/Pagination';
 import moment from 'moment';
 import Comment from '../comment/Comment'
-import { fetchSuggestedPosts, fetchUserComments, fetchUserPosts, resetUser } from '../../../actions/User';
+import { fetchSuggestedPosts, fetchUserComments, 
+    triggerSearchOff as triggerSearchUserOff,
+    triggerSearchOn as triggerSearchUserOn,
+    fetchUserPosts, resetUser } from '../../../actions/User';
 import { connect } from 'react-redux';
 
 const User = (props) => {
@@ -17,7 +20,7 @@ const User = (props) => {
         itemsPerPage: 10
     });
     const interestedTopics = user?.topics?.length ? user.topics.map(e => e.id) : [1, 2];
-    const { posts, comments, totalPosts, totalCredit, suggestedPosts } = props;
+    const { posts, comments, totalPosts, totalCredit, suggestedPosts, shouldSearchEntities } = props;
 
     const totalPage = Math.ceil(totalPosts / paginationState.itemsPerPage)
     useEffect(() => {
@@ -45,10 +48,20 @@ const User = (props) => {
         props.fetchUserPosts(user?.id, paginationState.currentPage);
     }, [JSON.stringify(paginationState)]);
 
+    useEffect(() => {
+        if (shouldSearchEntities) {
+            props.fetchUserPosts(user?.id, paginationState.currentPage);
+            props.fetchUserComments(user?.id);
+            props.triggerSearchUserOff();
+        }
+    }, [shouldSearchEntities])
+
+    console.log(shouldSearchEntities, 'shouldSearchEntities');
+
     return (
         <Container className="themed-container p-5">
             <Row>
-                <Col xs="8">
+                <Col md="8" xs="12">
                     <Row>
                         <Col xs="12" >
                             <span className="title-text">
@@ -70,7 +83,7 @@ const User = (props) => {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs="4">
+                <Col md="4" xs="12" style={{maxWidth: 350}}>
                     <div className="text-center border border-secondary rounded h-100 d-flex">
                         <h2 className="m-auto text-primary">
                             CREDIT: {totalCredit ? totalCredit : 0}
@@ -118,6 +131,7 @@ const User = (props) => {
                                     comments.map(e =>
                                         <Comment
                                             key={e.id}
+                                            hideEditButton={true}
                                             clickDisplayPost={true}
                                             isShort={true} entity={e} />
                                     )
@@ -161,14 +175,17 @@ const mapStateToProps = state => {
         comments: state.user.comments,
         totalPosts: state.user.totalPosts,
         totalCredit: state.user.totalCredit,
-        suggestedPosts: state.user.suggestedPosts
+        suggestedPosts: state.user.suggestedPosts,
+        shouldSearchEntities: state.user.shouldSearchEntities
     }
 }
 const mapDispatchToProps = {
     fetchSuggestedPosts,
     fetchUserComments,
     fetchUserPosts,
-    resetUser
+    resetUser,
+    triggerSearchUserOff,
+    triggerSearchUserOn
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

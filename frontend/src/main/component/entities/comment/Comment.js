@@ -18,7 +18,7 @@ import {mapAvatar} from '../shared/Avatar'
 
 
 const Comment = (props) => {
-    const { entity, isShort, clickDisplayPost, postEntity, commentUpdateSuccess, setSubmitFormVisibility } = props;
+    const { entity, isShort, clickDisplayPost, postEntity, commentUpdateSuccess, setSubmitFormVisibility, hideEditButton } = props;
     // const [postEntity, setPostEntity] = useState(null);
     const [deleteModal, setDeleteModal] = useState(false);
     const { user } = useAuth();
@@ -68,6 +68,7 @@ const Comment = (props) => {
         if (!errors.length) {
             value.id = entity.id
             props.editComment(value);
+            props.triggerSearchUserOn()
             setUserIntent("EDIT_COMMENT");
         }
     }
@@ -124,7 +125,7 @@ const Comment = (props) => {
                             onClick={handleDropdownClick}
                             className={entity?.user_id === user?.id ? "d-flex" : "d-none"}
                             toggle={toggleActionDropdown}>
-                            <DropdownToggle className="DropdownToggle" color="light">
+                            <DropdownToggle className={`DropdownToggle ${hideEditButton && 'd-none'}`} color="light">
                                 <FontAwesomeIcon icon={faEllipsisV} color="#333333" size="xs" />
                             </DropdownToggle>
                             <DropdownMenu>

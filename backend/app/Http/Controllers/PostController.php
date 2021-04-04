@@ -16,7 +16,7 @@ class PostController extends Controller
     //
     public function getPosts()
     {
-        $posts = Post::orderBy('created_at', 'desc')->with('comments', 'topic', 'postVotes')->paginate(10);
+        $posts = Post::orderBy('created_at', 'desc')->with('comments', 'topic', 'postVotes', 'user')->paginate(10);
         return GetdataOutput(1, 200, 'Lấy danh sách bài đăng thành công', $posts);
     }
     public function getPost($postId)

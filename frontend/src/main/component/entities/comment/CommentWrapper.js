@@ -14,6 +14,7 @@ const CommentWrapper = (props) => {
     const formRef = useRef();
     const { user } = useAuth();
     const [formVisibility, setFormVisibility] = useState(true);
+    const [userClickTextarea, setUserClickTexarea] = useState(false)
 
     useEffect(() => {
         if (shouldSearchComments) {
@@ -54,7 +55,7 @@ const CommentWrapper = (props) => {
 
     return (
         <Row className="p-1 m-3">
-            <Col xs="12">
+            <Col xs="12" className="text-break">
                 {
                     comments.length ? (
                         comments.map(e => (
@@ -78,6 +79,8 @@ const CommentWrapper = (props) => {
                 <AvForm style={{ width: '100%' }} ref={formRef} onSubmit={handleSubmitComment}>
                     <AvGroup>
                         <AvInput
+                            className={userClickTextarea && 'comment-textarea'}
+                            onClick={()=> setUserClickTexarea(true)}
                             type="textarea"
                             name="content"
                             placeholder="Trả lời bài đăng"

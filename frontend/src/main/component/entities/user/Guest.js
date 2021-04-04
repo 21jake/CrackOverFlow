@@ -11,8 +11,6 @@ import { connect } from 'react-redux';
 
 const Guest = (props) => {
     const { id } = useParams();
-    // const [user, setUser] = useState(null);
-    console.log(id, 'iddididididid')
     const [paginationState, setPaginationState] = useState({
         currentPage: 1,
         itemsPerPage: 10
@@ -48,7 +46,7 @@ const Guest = (props) => {
     return (
         <Container className="themed-container p-5">
             <Row>
-                <Col xs="8">
+                <Col md="8" xs="12">
                     <Row>
                         <Col xs="12" >
                             <span className="title-text">
@@ -70,7 +68,7 @@ const Guest = (props) => {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs="4">
+                <Col md="4" xs="12" style={{maxWidth: 350}}>
                     <div className="text-center border border-secondary rounded h-100 d-flex">
                         <h2 className="m-auto text-primary">
                             CREDIT: {totalCredit ? totalCredit : 0}

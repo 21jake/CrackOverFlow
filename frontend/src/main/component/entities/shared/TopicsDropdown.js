@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 
 
 const TopicsDropdown = (props) => {
-    const [topics, setTopics] = useState([{value: "", label: ""}]);
+    const [topics, setTopics] = useState([{ value: "", label: "" }]);
     const convertRawTopicData = (input) => {
         const output = input.map((e) => (
-          {
-              value: e.id,
-              label: e.name
-          }  
+            {
+                value: e.id,
+                label: e.name
+            }
         ))
         return output;
     }
@@ -22,7 +22,7 @@ const TopicsDropdown = (props) => {
             if (res.status === 200) {
                 const output = convertRawTopicData(res.data.data);
                 setTopics(output);
-            } 
+            }
         } catch (error) {
             console.log(error)
         }
@@ -55,21 +55,37 @@ const TopicsDropdown = (props) => {
 
     };
 
+    const returnDefaultOption = () => {
+        if (!props.defaultOption) {
+            return null;
+        }
+        if (typeof props.defaultOption === "number") {
+            return topics.find(e => e.value === props.defaultOption)
+        } else {
+            return props.defaultOption
+        }
+
+        
+    }
+
+
     return (
         <>
             <Label>
                 <span>Chọn chủ đề</span>
             </Label>
-            <Select 
+            <Select
+                key={`reactSelectKey${props.defaultOption}`}
                 onChange={props.onTopicsChange}
-                value={props.defaultOption}
+                value={returnDefaultOption()}
+                // value={props.defaultOption}
                 options={topics}
                 isMulti={props.isMultiple}
                 placeholder="Danh sách chủ đề"
                 isClearable
                 isSearchable
                 styles={customStyles} />
-                
+
         </>
     )
 }

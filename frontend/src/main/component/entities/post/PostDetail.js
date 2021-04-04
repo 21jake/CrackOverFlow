@@ -6,18 +6,17 @@ import { returnValueOrEmpty } from '../shared/returnValueOrEmpty';
 import moment from 'moment';
 import { useAuth } from '../../../../App';
 import DeleteModal from '../shared/DeleteModal';
-import { sample } from "lodash";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import TopicsDropdown from '../shared/TopicsDropdown';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastError } from '../shared/Toast'
-import { deletePost, triggerSearchOn, editPost } from "../../../actions/Posts";
+import { deletePost, triggerSearchOn as triggerSearchPostOn, editPost } from "../../../actions/Posts";
+import { triggerSearchOn as triggerSearchUserOn } from "../../../actions/User";
 import { triggerFetchOn as triggerFetchCommentsOn } from "../../../actions/Comments";
 import {useHistory} from 'react-router-dom';
 import { connect } from "react-redux";
-import Avatar from '@material-ui/core/Avatar';
-import { mapAvatar } from '../shared/Avatar'
+import { mapTopicColor } from '../shared/BadgeTopicColor';
 
 const PostDetail = (props) => {
     const history = useHistory();
@@ -52,7 +51,6 @@ const PostDetail = (props) => {
         }
     }, [post?.comments])
 
-    const badgeColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light']
     const onTopicsChange = (e) => {
         if (e) {
             setDefaultTopic(e);
@@ -83,13 +81,14 @@ const PostDetail = (props) => {
     const handleUserIntent = () => {
         switch (userIntent) {
             case "DELETE_POST":
-                props.triggerSearchOn();
+                props.triggerSearchPostOn();
                 setDeleteModal(false);
                 props.toggle();
                 // ToastSuccess("Xóa bài đăng thành công")
                 break;
             case "EDIT_POST":
-                props.triggerSearchOn();
+                props.triggerSearchPostOn();
+                props.triggerSearchUserOn();
                 setEditFormDisplay(false);
                 props.triggerFetchCommentsOn();
                 clearForm();
@@ -225,9 +224,9 @@ const PostDetail = (props) => {
                     </Col>
                     <Col xs="11" className="ml-auto d-flex justify-content-between">
                         {/* <Badge color="primary">Chủ đề 1</Badge> */}
-                        <Badge color={sample(badgeColors)}>{post?.topic?.name}</Badge>
+                        <Badge color={mapTopicColor[post?.topic?.color]}>{post?.topic?.name}</Badge>
                         <small className="font-italic ">
-                            {moment(returnValueOrEmpty(post?.created_at)).format('DD/M/YYYY, h:mm')}
+                            {moment(returnValueOrEmpty(post?.created_at)).format('DD/M/YYYY, HH:mm')}
                         </small>
                     </Col>
                 </Row>
@@ -241,12 +240,14 @@ const PostDetail = (props) => {
 const mapStateToProps = state => {
     return {
         postUpdateSuccess: state.post.updateSuccess,
+        shouldSearchPostEntities: state.post.shouldSearchEntities
     }
 }
 const mapDispatchToProps = {
     deletePost,
-    triggerSearchOn,
+    triggerSearchPostOn,
     editPost,
-    triggerFetchCommentsOn
+    triggerFetchCommentsOn,
+    triggerSearchUserOn
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);

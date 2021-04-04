@@ -15,7 +15,7 @@ import { useAuth } from '../../../App'
 import { useHistory } from 'react-router-dom';
 import TopicsDropdown from '../entities/shared/TopicsDropdown';
 import { Label } from 'reactstrap';
-import { avatars, mapAvatar } from '../entities/shared/Avatar'
+import { avatars } from '../entities/shared/Avatar'
 
 
 function Copyright() {

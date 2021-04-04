@@ -66,3 +66,7 @@ code {
   font-size: 1.3rem;
   color: #3f51b5;
 }
+
+.comment-textarea {
+  min-height: 150px;
+}

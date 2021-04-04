@@ -7,7 +7,7 @@ import SignUp from './main/component/auth/SignUp';
 import SignInSide from './main/component/auth/SignIn';
 import PostCreate from './main/component/entities/post/PostCreate'
 import { ToastContainer } from 'react-toastify';
-import { useState, useEffect, createContext, useContext, } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import Axios from "./main/api/Axios";
 import Search from './main/component/Search';
 
@@ -56,7 +56,6 @@ function App() {
     localStorage.removeItem('crackToken');
     setUser(null);
   }
-
 
   return (
 
